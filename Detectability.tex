@@ -1,0 +1,79 @@
+% \newcommand{\PPj}[2]{ P_{#1}P_{#2}...P_{1}P_{0}\ket{\psi } }
+\usepackage{cancel}
+\newcommand{\PPj}[1]{ #1...P_{1}P_{0}\ket{\psi } }
+\newcommand{\PPjj}[2]{ #1...P_{1}P_{0}#2\ket{\psi }}
+\newcommand{\Observable}[2]{ \braket{#1|#2|#1} }
+\newcommand{\Obs}[2]{ \Observable{#1}{#2} }
+\newcommand{\LocalHamiltonian }[1]{ \sum^{#1}{H_i} }
+\newcommand{\LoH}[1]{\LocalHamiltonian{#1} }
+\newcommand{\ham}{Hamiltonian }
+\newcommand{\stateGeneral}[1]{\( \ket{#1} \)}
+\newcommand{\state } { \ket{\psi} }
+\newcommand{\tstate}{\stateGeneral{\psi}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\Expectation}[2]{ \mathbb{E}_{#2}\left[#1\right]}
+\newcommand{\Exp}[2]{\Expectation{#1}{#2}}
+\paragraph{Detectability Lemma.} \ctt{Add citaion [AALV09] } Let \( H = \LoH{n} \) be a frustration free \ham such that \begin{enumerate}
+    \item all \(H_i\) are projections.
+    \item each \(H_i\) commutes with all but \(d\) terms \(H_j\).
+\end{enumerate}
+we further assume that the ground state \stateGeneral{\psi_0} has zero energy and for each \tstate  orthogonal to \stateGeneral{\psi_0} satisfies \( \Obs{\psi}{H} \ge \delta > 0 \). Denote by \( P_m = \left( I - H_m \right) \) Then we have: 
+\begin{equation}
+    \norm{ \PPj{P_m} }^2 \le 1 - \Omega\left( \frac{\delta}{d^2} \right)  
+\end{equation}
+
+\paragraph{Proof.} denote by \(N(i)\) the set of \(j\)-indices which \(H_j\) doesn't commute with \(H_i\) than, and let \(i_1\) be the first index in \( N(i) \) which \( H_i \) encounter when applied on \( \PPj{P_m} \): 
+\[ \begin{split}
+    \PPj{H_{i}P_{m}P_{m-1}} & = P_{m}...\PPj{H_{i}P_{i_1}P_{i_1-1}}  \\ 
+    &= \left( P_{m}...P_{i_1+1} \right)\left( \PPj{H_{i}P_{i_1-1}} - \PPj{H_{i}H_{i_1}P_{i_1-1}}   \right)  \\ 
+    & = - \sum_{j\in N(i) } \left( \prod_{k\notin N(i), k > j}{P_k} \right) \PPj{H_{i}H_{j}P_{j-1}}
+\end{split}
+\]
+When the left term is canceled, due to the fact that eventually \(H_i\) will continue progress until it will face \( P_i \) and \( H_i P_i = H_i - H_{i}^2 = 0. \) Therefore, \[ \begin{split}
+    \Obs{\phi}{H_i} & = \Obs{\phi}{H_{i}^2} \le d \sum_{j\in N(i)} {\norm{ \PPj{H_j P_{j-1}}}^2 } \\ 
+    &= d \sum_{j\in N(i)} { \norm{ \PPj{P_{j-1}}}^2 - \norm{ \PPj{P_{j} P_{j-1}}}^2 } \\ 
+    \Obs{\phi}{H} & \le d \sum_{i}^{m}{\sum_{j\in N(i)} { \norm{ \PPj{P_{j-1}}}^2 - \norm{ \PPj{P_{j} P_{j-1}}}^2 }} \\
+    &\le d^2 \sum_{i}^{m}{ \norm{ \PPj{P_{j-1}}}^2 - \norm{ \PPj{P_{j} P_{j-1}}}^2 } \\
+    &= d^2\left(1 - \norm{\PPj{P_m}}^2\right)=d^2\left(1 - \norm{\ket{\phi}} ^2\right) \Rightarrow \\ 
+    \delta \braket{\phi|\phi} & \le d^2 \left(1 - \braket{\phi|\phi}\right) \Rightarrow \braket{\phi|\phi} \le \frac{d^2}{d^2 + \delta} \sim 1 - \Omega\left( \frac{\delta}{d^2} \right)
+\end{split}   \] 
+
+\paragraph{Local Test.}\ctt{Yet not proven.} suppose that we choose \(J \subset [m] \) indecs, and a random \ham \( H_r\).  Then \begin{equation}
+    \Exp{\braket{\phi|\phi}}{\sim J} = \Exp{\norm{ \PPj{P_{|J|}} }^2}{\sim J} \le 1 - \Omega\left( \frac{\delta}{d^2} \right)  
+\end{equation}
+\paragraph{Application.} yields construction for qPCP protocol, given a double copy of witness \tstate, first test if it is an eigenvector (by variation of the phase estimation algorithm). Then it must be either the ground state either an orthonomal state. thus after executing \(\PPj{P_{|J|}}\) there is a constant probability that the state will remain the same. \ctt{I actually do not expect for constant probability.}   
+
+\paragraph{Proof.} Fix subset \(J \subset [n] \), and Denote by \(H_J = \sum_{j \in J} H_j  \) and \( \overline{H_J} = \sum_{j\notin J}H_j\).   Denote by \( \ket{\phi}\) the state \( \PPj{P_{|J|}} \) assume that \( \ket{\psi} \) is orthogonal to the ground space, then also \( \ket{\phi} \notin \ker H \) and therefore \( \Obs{\phi}{H} \ge \delta \braket{\phi|\phi} \) Thus \( \Exp{\braket{\phi|H|\phi}}{\sim J} \ge \delta \cdot \Exp{ \braket{\phi|\phi}}{\sim J} \). 
+If \(i \in J\) then as we get same as before:
+
+\[\begin{split}
+    H_i\ket{\phi} = -\sum_{j\in N(i) \cap J } \left( \prod_{k\notin N(i), k > j, }{P_k} \right) \PPj{H_{i}H_{j}P_{j-1}}
+\end{split}
+\]
+
+otherwise if \( j \notin J\) then, \(H_i\) will progress "right" till it will reach to \tstate : 
+\[\begin{split}
+    H_i\ket{\phi} = \left( \prod_{j\in J}{P_k} \right) H_i \ket{\psi} -\sum_{j\in N(i) \cap J } \left( \prod_{k\notin N(i), k > j, }{P_k} \right) \PPj{H_{i}H_{j}P_{j-1}}
+\end{split}
+\]
+Thus:
+\[\begin{split}
+ \Obs{\phi}{H} = \Obs{\phi}{H_J} + \Obs{\phi}{\overline{H_J}} & \le d^2\left(1-  \braket{\phi|\phi}\right)  \\ & \ \ \ + \sum_{i\notin J}\braket{\psi| H_{i}^{\dagger} \left( \prod_{j\in J}{P_{k}^{\dagger}} \right)\left( \prod_{j\in J}{P_{k}} \right) H_i |\psi}   \\ 
+ \Obs{\phi}{H_J} & \le d^2\left(1 - \braket{\phi|\phi}\right) + \Obs{\psi}{[\overline{H_J},P_J]}   
+%  \le d^2 \left( 1- \braket{\phi|\phi} \right) + \left(n- |J|\right) \braket{\phi|\phi} \\
+\end{split}
+\]
+grouping summation over disjoint \( J_i \) such that \( \bigcup J_i = [n] \) so in expectation we get :
+
+\[ \begin{split}
+\sum_{J_i \subset [n]} \prb{J_i} \Obs{\phi}{H_J} = \prb{J_i}\frac{|J|}{n}\sum\binom{n}{|J|}\max_{J^\prime \in \{J_i\}} \Obs{\phi_{J^\prime}}{H}  & = \frac{|J|}{n} \Exp{\braket{\phi|H|\phi}}{\sim J} \\ \le d^2\left(1 - \braket{\phi|\phi}\right) + \Obs{\psi}{[\overline{H_J},P_J]}
+\end{split}
+\]
+
+
+
+\[ \begin{split}
+\Rightarrow  \delta \cdot \Exp{\braket{\phi|\phi}}{\sim J}  \le &  d^2 \left( 1- \Exp{\braket{\phi|\phi}}{\sim J} \right) + n \Exp{\braket{\phi|\phi}}{\sim J} \\
+\Exp{\braket{\phi|\phi}}{\sim J} \le & \frac{d^2}{\delta +d^2 - n + |J| }
+\end{split}
+\]

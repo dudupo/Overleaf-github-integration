@@ -1,0 +1,23 @@
+
+
+\paragraph{Introduction}
+QMA is the quantum analog to NP and MA classes.  \textbf{Definition} QMA is the set of all languages \( L \subset \{ 0, 1\}^{*} \) for which there exists a quantum algorithm polynomial-time verifier circuit \( V \) such that for every \( x \ in \{0,1\}^*\) ,
+
+    if \( x \in L \) then there exists a witness state \( \ket{\psi_x} \) such that \( \prb{ V \left(x, \ket{\psi_x} \right) \ accepts } \ge \frac{2}{3} \) 
+    
+    if \( x \not\in L \) then for every purported witness state \( \ket{\psi} \), \( \prb{ V \left(x, \ket{\psi} \right) \ accepts } \le \frac{1}{3} \).
+\paragraph{}Important fact, the amplification from \( QMA \left( \frac{2}{3}, \frac{1}{3} \right) \) into  \( QMA \left( 1-\epsilon, \epsilon \right) \) can be done by using the a single instance of \( \ket{ \psi_x } \). Along the paper,  It is assumed that the input are given by precision of \( \mathbf{ Poly} (n) \) bits. When a problem is given a unitary or quantum circuit \( U_x \), it is assumed that the problem is actually given  a classical description \(x\) of the corresponding quantum circuit, which consists of \( \mathbf{Poly} (|x|) \) elementary gates.
+
+\paragraph{Non-Identity Check} Given a unitary \( U \) implemented by quantum circuit on  \( n\) qubits, determine whether \( U \) is \textit{not} close to trivial unitary ie; \[ L = \left\{ U : \forall \phi \in \left[0, 2\pi\right), \norm{U-e^{i\phi} \mathbf{1} } \ge \frac{1}{p(n)} \right\} \] 
+The reduction from \textbf{QCSAT} could be done by concatenate the given circuit \( U \) with the circuit \( U_{\oplus}^{\dagger} \) which is controlled by the ancilla. calculate \( U^{\dagger} \) require to product in reversed order each of the elementary gates of \(U\), by the fact the number of gates is bounded by \ona{ n\cdot \mathbf{DEPTH} } the reduction requires only polynomial time.   
+
+\paragraph{Non-Equivalence check} This problem is to determine whether two circuits (do not) define approximately the same unitary (up to phase) on some chosen invariant subspace.  \( \left(U_1,U2\right) \in L \) if there exist \( \ket{\psi} \in \mathcal{V} \) such that \( \forall \phi \in \left[0, 2\pi \right), \norm{\left( U_1U_{2}^{\dagger} - e^{i\phi}\right)\ket{\psi}}\ge b \).
+Reduction to \textbf{NIDC} is trivial.
+
+\paragraph{Non-Isometry testing} given a quantum operator \( A : \mathcal{H}_1 \mapsto \mathcal{H}_2 \) we ask if \(A\) is not an almost linear isometry ( mapping which preserve inner product ). given a quantum operator \( A \) that takes density matrices \( \mathcal{H}_1 \) to density matrices of \(\mathcal{H}_2\), determine whether \(A\) is not an\( \epsilon\)-isometry. ie there exist\( \ket{\psi} \) such that \( \norm{( A \otimes \mathbf{1}_{\mathcal{H}_1 })(\ket{\psi}\bra{\psi} )} \le \epsilon \). where \( \epsilon \ge 2^{-poly} \)  
+
+\paragraph{Detecting Insecure Quantum Encryption} \commentt{ Complete that definitions. and for Quantum Clique, and Quantum Non-Expander }
+
+\paragraph{K-Local Hamiltonian} are Hamiltonians that involve at most \(k\) qubits at a time. Formally, \(H\) is a \(k\)-local Hamiltoian if \( H = \sum_i{H_i} \) where each \(H_i\) is Hermitian operator acting on at most \(k\) qubits. one can also consider geometric restrictions in which interactions can only occur between neighbouring sites.
+\paragraph{Problem:} Given a \(k\)-local Hamiltonian on \(n\) qubits. \(H = \sum_{i=1}^r{H_i}\), where \( r = \mathbf{Poly}(n) \) and each \(H_i\) acts non-trivially on at most \(k\) qubits and has a bounded operator norm \( \norm{H_i} \le \mathbf{Poly}(n) \), determine if \(H\) has an eigen value less then \(a\). Moreover, it has been proved that this problem is \textbf{QMA}-complete even when \(k =3\) with constant norms.
+Reduction from \textbf{QCSAT} can be done, constructing for each elmentary gate \(U\) which act over the \(i, i+1\) qubits at time \(t\) the Hamiltonian \(H_{U,i,t} = U_{i,i+1}\otimes\ket{t+1}\bra{t} \) if that Hamiltonian has an eigen value \( p \) and by the assumption that the norm of each operator is bounded then we could also bound the norm of \( U \). The Consequences of completenece of the \textbf{K-LH} is that even if we could simulate the time evolving of a given state, still it's hard to engineer (or say something usefully) a conditional bound for achieving some goal.       

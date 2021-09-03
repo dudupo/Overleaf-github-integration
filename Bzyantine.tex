@@ -1,0 +1,54 @@
+
+
+\section{Introduction} 
+Byzantine Agreement refers to protocols in which are the adversaries are unknown. In the basic form, in each turn of the game, every player suggests a bit, and our goal is to make a decision that is unaffected by the adversaries. 
+
+\subsection{definitions}
+
+\paragraph{Fail-Stop model.} 
+The bad players chosen by the adversary are just crushed nodes which means they "choose" their output arbitrarily.
+\paragraph{Byzantine model.} 
+In that model, the bad players execute orders given by the adversary.  
+\paragraph{Adaptive adversary.} Has the freedom to choose the iteration number (time) to flip a good player into a bad one. 
+\paragraph{Full information adversary.} Knows the states of each player. ( including encryption keys, flipped coins results, quantum register, etc ).  
+\paragraph{Computationally unbounded adversary.} Means that we count only the number of the rounds as a resource parameter while considering the required computation time in each round as negligible.   
+\paragraph{Synchronization-Freedom.}
+The adversary has full control over the communication channels which mean that he can decide in which iteration \( t^{\prime} \) the message, \( m_{ij}^{(t)} \) which is the message which has been sand by player \( i \) to \(j \) in iteration \( t \) will actually get to its the destination.  
+
+\paragraph{Definition:} Let \(G\) be a protocol for \(n\) players, where each \( P_i\) outputs a (classical) bit \( v_i \in \{0,1\} \). We say that the protocol \( G \) is a \textcolor{blue}{\(t\)-resilient weak global coin protocol}  with fairness \( p > 0 \), if for any \(t\)-adversary and any value \(b\in \{0,1\}\), with probability at least \(p, v_i = b \) for all good players \(P_i \).
+
+we would like to think over \( p \) as \( \frac{1}{2} - \delta \) which mean that the adversary could not "biasillize" the coin more than \( \sim 2 \delta \) gap.     
+
+\subsection{results}
+
+\paragraph{ classical } up to \( t \) players may fail no deterministic algorithm can solve the synchronous problem in less than \( t+ 1 \) rounds \cite{einstein}. expected \( \mathcal{O} \) (1) communication, is achievable by using randomized algorithms and assumptions over on the possible behavior of the adversary, for example, limited knowledge of the adversary.   
+
+\paragraph{full information dynamic adversary } tolerating up to \( t \le n/3 \) faulty players, in synchronous setting and up to \( t \le n/4 \) faulty players for asynchronous systems. reach agreement \( \mathcal{ O } (1) \) expected communication.  
+
+\section{Reduction To Week Global Coin Generation.}
+The procedure work by the following: execute the \(t\)-resilient weak global coin until \( \frac{2}{3} \) ( or \( 1 -  \frac{t}{n} \) ) of the players commit the same value. by the definition of the protocol, we get that the number of iterations is bounded by 
+\begin{equation}
+\begin{split}
+ \mathbf{Pr}\left[ \frac{2n}{3} \ commit \ the \ same \ value \right] \ge \\ &
+\ge \mathbf{Pr}\left[ at \ least \frac{n}{3} \ of \ the \ good \ players \ commit \ the \ same \ value \right]  \\ &
+\ge \mathbf{Pr}\left[ \ \sum {P_i} - \mathbf{E} \left[\sum{P_i}\right]  \ \le \frac{n}{3} \right] \\ & 
+\ge \mathbf{Pr}\left[ \ \mid  \sum {P_i} - \mathbf{E} \left[\sum{P_i}\right] \mid \ \le \frac{n}{3} \right] 
+\ge 1-2p  
+\end{split}
+\end{equation}  Therefore the iteration number bounded from above by geometric  distribution with parameter \( 2p \), and the exception time is \( \mathcal{O} ( \frac{1}{p} ) \)   
+\paragraph{QuantumCoinFlip Protocol.} 
+Round \( \mathbf{I} \).  Initialize the state \( \ket{Coin_i} = \mathbf{GHZ}(n) \) send the \(k\)-th qubit to the \(k\)-th player. Then Generate the state \[ \ket{Leader_i} = \frac{1}{n^\frac{3}{2}} \sum_{a = 1}^{n^3}{\ket{a,a,....,a}}  \] over \( n \)-qudits, an equal super position. Distribute the \(n\) qudits between all the players. receive messages from all players. 
+
+Round \( \mathbf{II} \). Measure ( in standard base ) all \( Leader_j \) qudits received in Round \( \mathbf{I} \). Select the player with the highest Leader value as "leader" of the round. Measure the leader's coin in the standard base. Finally, set the output \( v_i = \) measurement outcome of the leader's coin.  
+
+\paragraph{Lemma. }for \( t \le \frac{1}{3} \) the QuantumCoinFlip is a \(t\)-resilient weak global coin protocol with fairness \( p \sim \frac{1}{3} \) in \textbf{Fail-stop} model. 
+\paragraph{Proof.}
+Each good player holds \( \ket{coin_{i}} \) in \( \mathbf{GHZ}(n) \) state, therefore if the chosen leader \(i\) is a good one then each good player \( j \) will measure \( \ket{coin_{ij}} \)  and by the entanglement the good players will measure the same value. So It's left to calculate what is the probability that a bad player will be chosen as the leader. Denote by \( X_1, X_2 ,X_3 \) the maximum qudit which measured for a bad player, and the two highest values which measured to good players. Each permutation of the \( X \)'s is a legal event, so for each event in the from \( X_1 = \max{X_1 ,X_2, X_3} \) there are pair of events, in which \( X_2 \ge X_1 \ge X_3 \) or \(X_2 \ge X_3 \ge X_1 \). Therefore the probability that a bad player have been chosen as leader is lower than \( \frac{1}{3} \).  
+\paragraph{}
+Note that there exists an adversary which wins the QuantumCoinFlip Protocol under the \textbf{Byzantine} model. First, he measures all qudits (before Round \textbf{II}), then he extracts the player which will be assigned as the leader, takes control over him, and transform his coin into the \( H^{\time n} \ket{0} \) state (or even just stop the leader).  
+\paragraph{ObliviousCoin}  To prevent from the adversary to takes control over the leader, we could use the grading method of Feldman and Micali \cite{einstein}, let's denote by \( s_i \) the grade of the player \( i \), each player \( k \) choose a \( \n \) numbers \( s_{ik}  \in [n-1] \) and send it for each of the other players, than the grade of the \( i \)-th player is \( s_i = \sum_{k=1}^{n}{s_{ik}} \ (\mod n) \). \paragraph{}By the fact, that even if we fix  \(n-1\) terms of \( s_{ik} \) the grade, \( s_i \) is still distributed uniformly we get that the intervention (at least in the first round) of the adversary could not enforce a single leader over the players (note, that he is still able to prevent the players to get into agreement).   
+
+\paragraph{Quantum Verifiable
+Secret Sharing QVSS.} \cite{CGS02} Despite sending a classical random bits, each player prepare the state \( \ket{\phi, \phi .... , \phi} \) where \( \ket{\phi} = \frac{1}{\sqrt{n}}\sum_{a=1}^{n}{\ket{a}} \). encode by an error correction code, and then sends only the \(i\)-th slice of the string to the \(i\)-th player, then each of the players encodes again and send for each other player. if \(j\) is an honest player than errors can occur only on the middle truncations. applying the correction procedure will tolerate the fulot.
+
+\paragraph{Quantum Authentication.} \cite{SecBenor} (not optimal in terms of redundancy or error probability). Consider \( m = 2d+1\) security parameter, where \(d\) is a parameter of the code (distance). let \(p\) be a prime, \( m \le p \le 2p \). let's consider the key : \(k_1,...,k_m \in_R \{ \pm \} \) and a string \( x \in_R \{ 0,1\}^{2m\log_2(p) } \). The dealer will then apply two transformations: First,    \[ \ket{S_a} \mapsto p^{-\frac{d}{2}} \sum_{\deg(f)\le d, f(0) = 0} { \ket{k_1 \times f(\alpha_1), .. ,k_m\times f(\alpha_m) }} \] where \( \alpha_1... \alpha_m \in \mathbb{Z}_p \) are distinct nonzero points known to all players. Then the encryption done by applying random Pauli operation on each part of the state. This equivalence to shifting the polynomials. the authentication is self dual. A key advantage of the code, is that it is possible to perform Clifford operations on coded data when one party holds the classical keys and the other party holds the data.  \paragraph{Lemma} In expectation over \(k\) and \(x\), for any encoded state and for any action taken by the adversary, the receiver's output has exponentially good fidelity to the space spanned by \[ \ket{\psi}\bra{\psi}\otimes I_V + I_M\otimes\ket{re}\bra{re} - \ket{\psi}\bra{\psi}\otimes\ket{re}\bra{re} \] If the adversary did not change the authenticated state the output will be the original state ten-sored with \( \ket{ac} \).  \commentt{Add security proof.}  

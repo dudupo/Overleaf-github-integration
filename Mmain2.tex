@@ -1,0 +1,67 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, total={6in, 8in}]{geometry}
+\usepackage{braket}
+\usepackage{xcolor}
+\title{Quantum Computing, formulas sheet.}
+\author{David Ponarovsky}
+\date{July 2021}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+Reading (and understanding) papers have been always a hard task, the goal of this paper is to reduce the pain. I hope that the reader will find it a convenient collection of reference points.
+The first chapter includes basic facts over the standard operators and technical identities, the second includes list of algorithms.
+
+
+\section{Identities, Common Operators, Calculations }
+\textcolor{red}{rewrite the math again. } 
+
+\( H^{n} \ket{x}  = \frac{1}{\sqrt{2^n}} \sum_{y\in\{0,1\}^n}{(-1)^{xy}\ket{y}}\)
+
+\[
+X	=\left[\begin{array}{cc}
+ & 1\\
+1
+\end{array}\right]\ \ \begin{array}{c}
+X\ket{+}=\ket{+}\\
+X\ket{-}=-\ket{-}
+\end{array}
+\]
+\[
+Y	=\left[\begin{array}{cc}
+ & -i\\
+i
+\end{array}\right]\ \ \begin{array}{c}
+Y\frac{\ket{0}+i\ket{1}}{\sqrt{2}}=\frac{\ket{0}+i\ket{1}}{\sqrt{2}}\\
+Y\frac{\ket{0}-i\ket{1}}{\sqrt{2}}=-\frac{\ket{0}+i\ket{1}}{\sqrt{2}}
+\end{array}
+\]
+\[
+Z	=\left[\begin{array}{cc}
+1\\
+ & -1
+\end{array}\right]\ \ \begin{array}{c}
+X\ket{0}=\ket{0}\\
+X\ket{1}=-\ket{1}
+\end{array}
+\]
+\section{Common Algorithms}
+\paragraph{Distance}
+    sampling, mapping the superposition of pair vector  \( \ket{0}\ket{u}+\ket{0}\ket{v}	\mapsto\ket{0}\ket{u+v}+\ket{1}\ket{u-v} \) then, measuring yields \( 1 \) with probability:  
+    	\( \frac{1-\braket{u|v}}{2}=\frac{1}{4}d^{2}\left(u,v\right) \).
+    	Estimate the distance can be done by \( \ket{v}\ket{u}\ket{0}\mapsto\ket{v}\ket{u}\ket{\overline{d^{2}\left(u,v\right)}} \) with \( \mathcal{O}\left(\frac{1}{\varepsilon}\log\frac{1}{\Delta}\right) \) steps. 
+	
+\paragraph{Singular Values Estimation}
+    ( Phase estimation for non-unitaries). Project \( \ket{\psi} = \sum_{i}\lambda_i\ket{v_i}\bra{v_i} \) onto eigenspace of \(  \sum_{\lambda_i \ge t }\lambda_i\ket{v_i}\bra{v_i} \). 
+
+\paragraph{extract classic vector} 
+    Given a circuit that output state \( \ket{x}= \sum_{i}^{n}x_i \ket{i} \) then we could output a classical vector \( x \) in \( \mathcal{O} ( \frac {n}{\epsilon^2} ) \) time, for \( l_2 \) and in \(  \mathcal{O}  \frac {1}{\epsilon^2} ) \) time, for \( l_{\infty} \). ( lower bound for \( l_{\infty} \) remain open question.     
+
+\section{Codes}
+
+
+
+\end{document}

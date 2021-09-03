@@ -1,0 +1,65 @@
+
+
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, total={6in, 8in}]{geometry}
+\usepackage{braket}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+
+% \usepackage{biblatex} %Imports biblatex package
+
+\usepackage[
+backend=biber,
+style=alphabetic,
+sorting=ynt
+]{biblatex}
+
+\begin{document}
+
+\newcommand{\GG}{\tilde{G} }
+\newcommand{\TGG}{\(\tilde{G}\) }
+\newcommand{\Prb}[1]{ \mathbf{Pr}\left[ {#1} \right] }
+
+
+
+\paragraph{(week) PCP Thm}. There exist polynomial time reduction, which take graph \(G\) and return \(\tilde{G}\) such that if \( G\) id 3- colorable than \( \tilde{G} \) is also 3-colorable, and if \(G\) is not  3-colorable than, \TGG is \textbf{far} from 3-colorable, i.e for each coloring at least \(0.01\) fraction of edges mono-chromatic.
+\textbf{Global} property \(\rightarrow\) \textbf{Local} test. (pick random edge in \TGG ).
+
+\paragraph{ Quadratic Equations Over \( \{ 0,1 \}\) } \[ \begin{split}
+    & x_1x_2 + x_2x_3 + x_2 + x_5 + 1 = 0 \\ 
+    & x_1x_2 + x_2x_3 + x_2 + x_5 + 1 = 0 \\ 
+    & x_1x_2 + x_2x_3 + x_2 + x_5 + 1 = 0
+\end{split}   \]
+map \( \varepsilon \rightarrow \tilde{\varepsilon} \) each equation depends on 3 variables, "week" we will show how to generate equation in \( \tilde{\varepsilon} \) in poly time ( not log). 
+\begin{enumerate}
+    \item \(\varepsilon\) satisfable \( \Rightarrow  \tilde{\varepsilon}\)  is satisfable
+    \item \(\varepsilon\) is not satisfable, for every assignment to \( x_1 .. x_n \) at least \(0.01\) fraction of equations are false.  
+\end{enumerate}
+\paragraph{Construction.} start with \(\varepsilon\) on \(x_1...x_n\) \(\tilde{\varepsilon}\) has a variaible for every quaderatic poly \(q:\{0,1\}^n \rightarrow \{0,1\} \), \( q(x) = \sum {q_{ij}x_ix_j }\) denote  \( "q(x)"\). pick a random equation in \( \tilde \). w.h \( "l_1(x)" + "l_2(x)" = "(l_1 + l_2)(x)" \)
+
+\paragraph{ Linear test } Choose uniformly random points \(x,y \in \{0,1\}^n \). Test if \(f(x+y) = f(x) + f(y)\). \textbf{Theorem} if \(f\) is \(delta\)-far from linear then, \(\mathbf{Pr}[BLR \ rejects \ f ] \ge \min{ \left( \frac{2}{9}, \frac{\delta}{2} \right) } \ge \frac{2\delta}{9}  \) Proof, define, \(g(x) = 1 \ if \ \mathbf{Pr}_y[f(y) + f(x-y) = 1] \ge \frac{1}{2} \). denote by \( P_x = \mathbf{Pr}_y[g(x) =f(y)+f(x=y)] \). then we can bound the probability to rejection by:\[
+\begin{split}
+    \mathbf{Pr}[rejection]   &  \ge \Prb{ rejection| f(x) \neq g(x)} \Prb{ f(x) \neq g(x) } =  \\ &   \ge \Prb{ f(x + y) \neq f(x) + f(y) | f(x) \neq g(x)]\mathbf{Pr}[f(x) \neq g(x) } = \\ &   \ge \Prb{ f(x + y) \neq f(x) + f(y) | f(x) \neq g(x)}dist(f,g)  
+\end{split}\]
+
+by the definition, \(g(x)\), equals to the majority of the term : \(  f(x)  + f(x-y) \). so \[
+\begin{split}
+    \mathbf{Pr}[rejection| f(x) \neq g(x)] & = \mathbf{Pr}[f(x+y) \neq f(x) + f(y) | f(x) \neq g(x)]  \\ & =  \mathbf{Pr}[f(x+y) = g(x) + f(y) | f(x) \neq g(x)]  = P_x \ge \frac{1}{2} 
+\end{split} \]. therefore \( \mathbf{Pr}[rejection] \ge \frac{1}{2} dist(f,g) \).  
+
+\paragraph{Claim.} If \( \Pr{ BLR \ rejects \ f  } \le \frac{2}{9} \) then for all \(x\) we have \( P_x \ge \frac{2}{3} \). proof, compute \( A = \Pr{ f(y) + f(x+y) = f(z) + f(x+z) }_{yz} \) in two ways. first because \(y\) and \(z\) are independent we get that with probability at least \[\left(1 - \Prb{ BLR \ rejects \ f  }\right)^2 \ge \frac{7^2}{9^2} \ge \frac{5}{9} \] the occur two linear test pass \( f(y) + f(z) = f(z+y) \) and \( f(x+ y) + f(x+z) = f(x+ y + x+ z ) = f(y + z) \). second, \( f(y) + f(x+y) = g(x)\) is probability \( P_x \) therefore, or \( f(y) + f(x+y) = 1 + g(x)\) with  probability \( 1 - P_x \). thus, \( A = P_{x}^2 + (1-P_{x})^2 \ge \frac{5}{9} \Rightarrow P_x \ge \frac{2}{3} \).    
+
+\paragraph{ Claim.} if \( \Pr{ BLR \ rejects \ f  } \le \frac{2}{9} \) then \(g\) is linear. by the above claim and the Pigeonhole principle, for each \(x, y\) there exist at least one \(z_0 \) such that: \[
+\begin{split}
+    g(x) &= f(z_0) + f(x+z_0) \\
+    g(y) &= f(z_0) + f(y+z_0) \\
+    g(x+ z_0 + z_0 + y) &= f(z_0 +x) + f(z_0 + y) 
+\end{split}\]
+so \(g(x) + g(y) = g(x+y) \) for each pair \( (x,y) \) and \(g\) is linear as desired. therefore , we get that either \( \Pr{rejection} \ge \frac{2}{9} \) or else \( g \) is linear and so  
+\[ \mathbf{Pr}[rejection] \ge \frac{1}{2} dist(f,g)  \ge \frac{1}{2} dist(f,linear) \ge \frac{\delta }{2}  \].  
+
+change.
+
+\end{document}

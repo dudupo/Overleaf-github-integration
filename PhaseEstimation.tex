@@ -1,0 +1,82 @@
+
+\paragraph{Introduction} Phase estimation is an example of a solvable problem in "constant" time classically (and quantumly). Yet, the less efficient quantum algorithm enables other algorithms to achieve quantum superiority by using superposition advantage.
+The problem goes as follows, Let \(U \in \mathbb{M}_{2^n \times 2^n }(\mathbb{F})\) and \(v\) be a matrix and an eigenvector; what is the eigenvalue \(\lambda\) ? Classically, we answer it by calculating the quotient \( (Uv)_0/v_0 \) which done by \ctt{ add  time complexity of approximate linear operation with Boolean circuits over \(n\) bits.} The notations in the paper are attributed to Kitaev \cite{kitaev}.
+\paragraph{quantum solution} Denote by \( U_{\oplus} \) the control-\(U\) gate. Let's look at the following composition of
+operators \( H^{\dagger}U_{\oplus}H = HU_{\oplus}H \). Apply it over \( \ket{v}\ket{0} \) results : \begin{equation*} \begin{split}  H^{\dagger}U_{\oplus}H \ket{v}\ket{0} & = H^{\dagger}U_{\oplus} \frac{1}{\sqrt{2}}\left(\ket{v}\ket{0} + \ket{v}\ket{1} \right) \\ & = H^{\dagger} \frac{1}{\sqrt{2}}\left(\ket{v}\ket{0} + \lambda\ket{v}\ket{1} \right) \\ & = \frac{1}{2}\left(\ket{v}\left(\ket{0}+\ket{1}\right)+\lambda\ket{v}\left(\ket{0}-\ket{1}\right)\right) \\ & = \frac{1}{2}\left(1+\lambda\right)\ket{v}\ket{0} + \frac{1}{2}\left(1-\lambda\right)\ket{v}\ket{1} \end{split}\end{equation*}  measurement the \textit{ancila} qubit yields \( \ket{0} \) with probability \( \prb{ \ket{a} = \ket{0} }  = \big| \frac{ 1 + \lambda}{2} \big|^2 \sim \frac{1}{2}\left( 1 + \cos (\theta) \right)  \). Where \( \theta\) denote the projection angle of the results vector. And using Chernoff inequality bound, \[ \prb{ \big| \frac{1}{k}\sum_{i}^{k}{x_i} - \mathbf{E}[x] \big| \ge \varepsilon} \le 2exp\left( -\frac{k\varepsilon^2}{2} \right) \] It is enough to repeat the calculation \ona{ \frac{1}{\varepsilon^2}  \log\left(\frac{1}{\delta}\right) } to ensure that with probability at least \( \delta \) we will estimate the eigenvalue with error less than \( \frac{\varepsilon}{2} \). Note, that  \( \varepsilon \)  isn't  depend on the dimension of \( U \), neither \( \delta \).
+In addition suppose, that we have an access to the circuit \( U^{2^t} \), then we could estimate \( \lambda \) with an error of \( 2^{-t} \) by using take sqrt \( t\) times,  \[ \tilde{\lambda}_{2^{t-1}} \leftarrow \sqrt{\tilde{\lambda}_{2^t} + \varepsilon }\le  \sqrt{\tilde{\lambda}_{2^t}} + \frac{1}{2}\varepsilon \]Hence achieving precision of \( 2^{-m} \) requires an order of \ona{ m\log(m)} operations \ctt{Fix that sentence, the operations are required for calculating the \(U^{2^t} \) gate } .      
+\paragraph{Factoring} At first sight, It is hard to notice if the quantum approach holds any advantage at all. Now we will introduce an application which wins the best known classical algorithms, for integers factoring.
+Consider the natural number \( 1 < N  \le 2^n \) at length \( n \) bits, with \(k\) prime factors \( N = p_{1}^{e_1}p_{2}^{e_2}p_{2}^{e_2}...p_{k}^{e_k} \). The general method for decompose number is to find \(x\) such that \( x^2 \equiv 1 \left( mod \ N \right) \) and  \( x\neq \pm 1  \left( mod \ N \right) \). Since \[0 = x^2 - 1 = \left(x-1\right)\left(x+1\right) \Rightarrow x+1 \ | \  N \] At least one of \( x \pm 1 \) is less than \( \sqrt{N} \)  then given efficient method to find such \(x\)'s we can complete the task by \ona{\log\log N}  recursive iterations. Unfortunately (or luckily), the best such classically subroutines require super polynomial time (note that the problem isn't (probably) \textbf{NP}-complete since there are (classically) sub-exponential solutions).
+\commentt{ Insert definition of the ismorphisem \( \varphi : \mathbb{Z}_N \mapsto  \mathbb{Z}^{*}_{N} \ \)    }
+\paragraph{Definition} For \( \vec{a} \in \mathbb{Z}^{*}_{N} \) denote by the \(r\) the minimal number such that \( \vec{a}^{r} \equiv 1 \), then we call for \(r\) the order of \(\vec{a} \). 
+\paragraph{Lemma} For uniformly chosen \( a \in \mathbb{Z}_N \) the rank of \( \varphi(a) \in \mathbb{Z}^{*}_{N} \) is even with high probability, greater then \( \ge 1 - 2^{-n+1}  \). 
+In other words, \( b = a^\frac{r}{2} \) is integer which satisfy the equation: \(b ^2 = 1\).   
+\paragraph{quantum solution} Choose uniformly \( a \in \mathbb{Z}_N \), and construct the gates \( U_{a}, U_{a}^{2} ... U_{a}^{2^t}  \) \[ U_{a}\ket{x} = \begin{cases} \ket{ax \ mod N} & (x,N)=1 \\ \ket{x} & else  \end{cases} \] 
+let \( w = e^{i\frac{2\pi}{r}}\)  consider the Fourier base \[ \ket{\psi_k} = \frac{1}{\sqrt{r}}\left( \ket{1} + w^{-k}\ket{a} + w^{-2k}\ket{a^2} ...  + w^{-(r-1)k}\ket{a^{r-1}}\right) \] then \( U_{a} \) applying \( U_a \) over \( \ket{\psi_k} \) yields: \[ \begin{split}
+U_{a}\ket{\psi_k} & = \frac{1}{\sqrt{r}}U_{a}\left( \ket{1} + w^{-k}\ket{a} + w^{-2k}\ket{a^2} ...  + w^{-(r-1)k}\ket{a^{r-1}}\right)  \\ & = 
+\frac{1}{\sqrt{r}}\left( U_{a}\ket{1} + w^{-k}U_{a}\ket{a} + w^{-2k}U_{a}\ket{a^2} ...  + w^{-(r-1)k}U_{a}\ket{a^{r-1}}\right) \\ & = \frac{1}{\sqrt{r}}\left( \ket{a} + w^{-k}\ket{a^2} + w^{-2k}\ket{a^3} ...  + w^{-(r-1)k}\ket{1}\right)\\ & = w^{k}\ket{\psi_k}  \end{split} \] That is, \( \ket{\psi_k} \) is an eigenvector with eigenvalue \( w^{k}=e^{i\frac{2\pi k}{r}} \). Note that, if we knew the base \( \ket{\psi_k} \), we could estimate the phase classically in \ona{ \mathbf{Poly} (r)  } time, and then extract the order of \(a\). The problem is that we do not know. Here quantum mechanics proves it's \textbf{Superiority}, let's look of \( \ket{1} \) state: \[ \braket{\psi_{k}|1} = \frac{1}{\sqrt{r}} \]Therefore The presentation of  \( \ket{1} \) in the Fourier base is \[ \ket{1} = \sum_{k}^{r} {\braket{\psi_{k}|1}\ket{\psi_{k}}} = \frac{1}{\sqrt{r}}\sum_{k}^{r} {\ket{\psi_{k}}} \]Therefore \( \ket{1} \) is the uniform weighted superposition of all \( \ket{\psi_k} \). So we will execute the circuit over \( \ket{1} \) then the after the measurement we will estimate a phase of \( \frac{k}{r} \) for arbitrary \(k\). for finding the most significant bit of \(r\) we could look in binary search; we will sample a \(T\) results and ask if at least \(\frac{1}{2}\) of them are beneath \(2^j\), if the answer is positive then \(r\) \le \(2^{j+1}\) with high probability, else. we will check \(2^{j+1} \).  \commentt{Improve the language. }      
+
+
+
+\paragraph{Definition Span Program.} \cite{algo} A span program, \( P = \left(H, \mathcal{U} ,\tau,A\right) \) on \( \{0,1\}^N \) is made up of \textbf{(1)} finite-dimensional inner product space \( H = H_1 \oplus H_2 .... \oplus H_N \), and \( \{ H_{j,b} \subset  H_j \}_{j\in [N], b\in \{0,1\}} \) such that \( H_{j,0} + H_{j,1} = H_j \), \textbf{(2)} a vector space \( \mathcal{U} \). \textbf{(3)} a non-zero target vector \( \tau \in \mathcal{U} \), and \textbf{(4)} a linear operator \( A : H \Rightarrow \mathcal{U} \). for every string \( x \in \{0,1\}^N \) we associate the subspace \( H(x):= H_{1,x_1}\oplus ... \oplus H_{N,x_N} \) and an operator \( A(x):= A\Pi_{H(x)} \). 
+
+\paragraph{Definition (Positive and Negative Witness}. Let \(P\) be a span porgram on \( \{0,1\}^N \) and let x be a string \( x \in \{0,1\}^N \). Then we call \( \ket{w} \) a positive witness for \(x\) in \( P\) if \( \ket{w} \in H(x) \) , and \( A\ket{w}=\tau \). We define the positive witness size of \(x\) as: \[ w_{+}(x,P) = w_{+}(x) = \min{\{ \norm{\ket{w}}^2: \ket{w} \ is  \ a \ positive \  witness \}} \] if there exists a positive witness  for \(x\) and \( w_{+} (x) =\infty \) otherwise.
+Let \((\mathcal{L},\mathbb{R})\) denote the set of linear maps from \( \mathcal{U} \) to \( \mathbb{R} \). We call a linear map \( w \in (\mathcal{L},\mathbb{R})\) a negative witness for \(x\) in \(P\) if \( wA\Pi_{H(x)}=0\) and \( w\tau =1 \). We define the negative witness size of \(x\) as: \[ w_{-}(x,P) = w_{-}(x) = \min{\{ \norm{wA}^2: w \ is  \ a \ negative \  witness \}} \] if there exist one, and  \(\infty \) otherwise. If \( w_{+}(x) \) is finite, we say that \(x\) is positive, and if \( w_{_}(x) \) is finite, we say that \(x\) is negative.
+For function \( f : X \rightarrow \{ 0,1\} \), with \( X \subset \{0,1\}^N \), we say \(P\) decides \(f\) if \( f^{-1}(0)\subset P_0 \) and \( f^{-1}(1) \subset P_1 \). (with high probability), given access to the input \(x \in X\) via queries of the form \( \mathcal{O}_x : \ket{i,b}\mapsto \ket{i,b\oplus x_i}\).
+\paragraph{ Theorem }. Let \( \mathcal{U}(P,x) = \left( 2\Pi_{\ker A } - I\right)\left(2\Pi_{H(x)} - I \right)\). Fix \( X\subset \{0,1\}^N \) and \( f:X\rightarrow \{0,1\} \) and let \(P\) be a span program on \( \{0,1\}^N \) that decides \(f\). Let \( W_{+}(f,P) = \max_{x\in f^{-1} (1)}w_{+}(x,P) \) and \(W_{-}(f,P) = \max_{x\in f^{-1} (0)}w_{-}(x,P) \). Then there is a bounded error quantum algorithm that decides \(f\) by making \ona{\sqrt{W_{+}(f,P)W_{-}(f,P)}} calls to \( \mathcal{U}(P,x) \). \commentt{Add proof for that theorem.} 
+
+\paragraph{st-Connectivity Span Program.} Consider the graph \(G\) with some implicit weighting function \(c\). Let define the \(P_G\) span program by \textbf{(1)} \( \forall i \in \left[N\right], b\in \left\{0,1\right\} : H_{i,b} = span\left\{ \ket{e} : e \in \vec{E_{i,b}} \right\} \),  \textbf{(2)} \( \mathcal{U} = span\left\{ \ket{v} : v \in V(G) \right\} \), \textbf{(3)} \( \tau = \ket{s} - \ket{t} \)  and for all edge \(e\), \textbf{(4)} \( A\ket{uvl}= \sqrt{c\left(u,v,l)\right) } \left( \ket{u} - \ket{v} \right) \).   It can shown that \(x\) is a positive input for \(P_G\) if and only if \( G(x) \) is st-connected, and in particular \( w_{+} (x,P_G) = \frac{1}{2}R_{s,t}(G(x)) \).
+
+\newcommand{\V}{  V\left( G \right) }
+\newcommand{\E}{  \vec{E}\left( G \right) }
+\newcommand{\Projx}[2]{ \sqrt{c\left(u,v,l\right) } \left( #1 - #2 \right) }
+\newcommand{\Proj}[]{ \Projx{\ket{u}}{ \ket{v}} }
+\newcommand{\Vw}[1]{\mathcal{V}_w \left(#1\right)}
+\newcommand{\tu}{\left(u,v,l\right)}
+
+\newcommand{\Pot}[]{\mathcal{V} \left(v\right) \bra{v}}
+
+\paragraph{Theorem.} Let \(P_G\) be the span program which defined above. Then for any \( x \in \{0,1\}^N \) \[ w_{-}\left(x,P_G\right) = 2C_{s,t}\left(G\left(x\right)\right) \]. 
+\paragraph{Proof.} Given a unit st-potential \( \mathcal{V} : V\left( G \right) \rightarrow \mathbb{R} \) on \( G \left(x\right) \), we consider \( w_{\mathcal{V}} = \sum_{v\in V\left( G \right) }{\mathcal{V} \left(v\right) \bra{v}}\). Then because \( \mathcal{V}\left(s\right) = 1  \) and \( \mathcal{V}\left(t\right) = 0 \), we have \( w_{\mathcal{V}}\tau = 1\). Secondly, 
+\[
+\begin{split}
+    w_{\mathcal{V}}A\Pi_{H\left( x \right) } & = \sum_{u^\prime \in \V }{ \Pot } \sum_{ \left(u,v,l\right) \in \E}{\Proj \bra{u,v,l} } \\
+    & = \sum_{\left(u,v,l\right) \in \E }{ \Projx{ \mathcal{V}\left(u \right) }{ \mathcal{V}\left(v \right) }  \bra{u,v,l} = 0  }
+\end{split} 
+\]
+where we have used the definition of unit st-potential, which states that \( \mathcal{V}\left(u \right) - \mathcal{V}\left(v \right)  = 0 \) when \( \left(u,v,l\right) \in \E \). Thus, \( w_{\mathcal{V}} \) is a valid negative witness for input \(x\). We have  
+\[ 
+\begin{split}
+w_{-}\left(x , P_G \right) \le \min_{\mathcal{V}} \norm{ w_{\mathcal{V}} A}^2 & =  \min_{\mathcal{V}}\norm{\sum_{\left(u,v,l\right) \in \E }{ \Projx{ \mathcal{V}\left(u \right) }{ \mathcal{V}\left(v \right)} \bra{u,v,l}} } \\
+& = 2 \min \sum_{\left(u,v,l\right) \in \E }{ \left( \mathcal{V}\left( v \right) -  \mathcal{V}\left( u \right) \right)^2 c\left(u,v,l\right) } = 2C_{s,t}\left(G\left( x \right) \right) 
+\end{split}
+\]
+
+where the minimization is over the unit st-potentials on \( G \left( x \right) \). Next, we show that  any negative witness, \( w \) for \( P_G \) on input \(x\) can be transformed into unit \(st\)-potential \( \mathcal{V}_{w} \) on \( G \left(x\right) \), with negative witness size equal to twice the unit potential energy of \( \mathcal {V}_{w} \). Given \(w\), a negative witness for input \(x\), let \( \mathcal{V}_w \left(v\right) = w \left( \ket{v} - \ket{t} \right) \) for \( v \in \V \). Then \( \Vw{s} = w \left( \ket{s} - \ket{t} \right) = w\tau = 1 \), and \( \Vw{t} = w \left( \ket{t} - \ket{t} \right) = 0 \). Also for \( \tu \in \E \) we have \[
+\begin{split}
+    \Vw{u} - \Vw{v} & = w \left( \ket{u} - \ket{v} \right) \\ 
+    & = wA\ket{\tu} = wA\Pi_{H\left(x\right)}\ket{\tu}  = 0
+\end{split}
+\]
+
+Thus, \( \Vw \) is a \(st\)-unit potential for \(G\left(x\right)\). Then 
+\[
+    \begin{split}
+        w_{-}\left(x,P_G\right) & = \min_{w}\norm{wA}^2=\min_{w}\sum_{\tu \in \E }{ \left( w \left( \ket{u} - \ket{v}  \right)  \right)^2 c\tu } \\ 
+        & = \min_{w}\sum_{\tu \in \E }{ \left( \Vw{u} - \Vw{v}   \right)^2 c\tu } \ge 2 C_{s,t}\left(G\left(x\right)\right)
+    \end{split}
+\]
+
+\newcommand{\seq}[1]{ \( w_{-}\left(x, P_G \right) #1 2 C_{s,t}\left(G\left(x\right)\right) \)}
+
+where the minimization is over negative witness. Since \seq{ \ge } and \seq {\le }, we must have \( \seq{ = } \).
+
+\renewcommand{\seq}[1]{ }
+
+\paragraph{Corollary.} Let \(G\) be a multigraph with \(s,t \in \V\).
+Then for any choice of (non-negative, real-valueted) implicit weight function, the bounded error quantum query complexity of evaluating \(st-\mathbf{CONNN_{G,X}}\) is \ona{\sqrt { \max_{x\in X} R_{s,t} \left( G (x) \right) \times \max_{x\in X} C_{s,t} \left( G (x) \right) } }  
+
+\renewcommand{\V}{}
+\renewcommand{\E}{}
+\renewcommand{\Projx}{}
+\renewcommand{\Proj}{}
+\renewcommand{\Pot}{}
