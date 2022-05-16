@@ -5,8 +5,10 @@
 \usepackage{xcolor}
 \usepackage{amsmath}
 \usepackage{amsfonts}
-
+\usepackage{graphicx}
 % \usepackage{biblatex} %Imports biblatex package
+\usepackage{float}
+\usepackage{media9}
 
 \usepackage[
 backend=biber,
@@ -27,6 +29,7 @@ sorting=ynt
 \date{August 2021}
 
 \begin{document}
+\graphicspath{ {./images/} }
 \maketitle
 
 \part{ Problems }
@@ -99,27 +102,39 @@ inputs, \(x\) is given to Alice, and \(y\) is given to Bob, where \(x, y \in \{0
     The communication complexity is exactly \( \frac{2t}{c(\varepsilon)}\log n\) qubits.
 \item What is the complexity of the quantum circuits that are needed for Alice, Bob and referee \(R\), to implement the protocol suggested in (a)? Explain/Prove why.
 
-\textbf{Solution.} At least \( \Omega(2^{\frac{n}{2}}) \). Denote by \( C \) the reduction circuit, by \(D(n)\) it's depth, and by \( U_f \) the flipping phase circuit from Grover algorithm, i.e \( U \ket{x} = (-1)^{f(x)} \ket{x}\). Let \( \ket{\psi}  \) be the super position state in the \(m\)-qubits Hilbert space which is matched to \( \ket{x} \).
+\textbf{Solution.} An algorithm that for a given string \( x \in \{0,1\}^n \) compute the matched reduced state over \(m\) qubits in polynomial time and sub exponential memory is presented in the next question.
 
-Applying \( CU\ket{x} \) will calculate the reflected state \( (-1)^{f(x)} \ket{\psi} \) at cost of \( D(n) \) time. Therefore we could use that oracle \textcolor{blue}{*}  to perform a Grover search in the reduced \(m\)-qubits space, and deiced if Boolean formula is in 3-\textbf{SAT} in \ona{ 2^\frac{m}{2} 2\cdot D(n) } = \ona{ poly(n) D(n)} ( thus, if \( D(n) \in poly(n) \) then NP = BQP ).      
-
-\ctt{* extra caution should be taken here, the reflection is done in the reduced space. And therefore the correction proof which was presented in the class doesn't valid any more, and also I don't sure that the uniform super position over \(n\) qubits could represented in the reduced base ( The truth, is that I am sure that it's cannot, but there is a chance that we can divide the calculation to searching over constant number of group each contains exponential number of states). But I have failed to find a more formal solution than that.   }
-
+I am sure that it impossible to implement the protocol with only polynomial space cost.        
 
 \item (Optional) Describe an efficient (polynomial time complexity) protocol with \ona{\log n} qubits messages from Alice and Bob to \(R\). Hint: You can use a simple classical code (not necessarily binary)
 with \(2^n\) codewords, that have a good distance (and a reasonable, even if not optimal, rate). Note: There is a classical randomized algorithm where Alice and Bob each send to \(R\) a message of size \ona{\sqrt{n}}  and \(R\)’s error probability is at most \(1/100\) (This is known to be optimal).
 
 
-\textbf{Solution.} polynomial time, \( \log(n) \) communication and \textbf{sub-exponential space}.  
+\textbf{Solution.} polynomial time, \( \log^2(n) \) communication and \textbf{sub-exponential space}.  
 
-\textit{First solution}, observe that there is a naive solution which require exponential space, Alice, Bob and R, holds for each \( \ket{x} \in \{0,1\}^n \) a circuit \( C_x \) which embeds the state in the \(m\)-qubits Hilbert space according to preselected base. By the fact that \(C_x\) doesn't need to take in account other states, we can find such circuit which is also unitary gate. Therefore by \textbf{Solovay–Kitaev} theorem, there is such circuit (\( C_x \)) whose depth is polynomial at \(n\). so Alice and Bob should first perform binary search at \ona{\log(2^n)} time to find the circuits \(C_x , C_y\), then each of them reduces his number \(x\) (or \( y \)) into state \( \ket{\psi} \in \mathcal{H}_{2^m} \) and send it to \(R\). Finally \(R\) perform the \textbf{SWAP} Test and deiced whether or not \(x = y\).
+\textit{First solution}, observe that there is a naive solution which require exponential space, Alice, Bob and R, holds for each \( \ket{x} \in \{0,1\}^n \) a circuit \( C_x \) which embeds the state in the \(m\)-qubits Hilbert space according to preselected base.
 
-\textit{Second solution} with \( 2^n/n \) space. Instead of holding circuit for each state, each state will be responsible to \(n\) states ( or \( n^k \) ) it's still easy to bound the depth of the circuits by polynomial. Yet the space is still exponential.
+The description of \(C_x\) is lay below (Figure 2), and it's using \ona{ 2^{m} } \( = \) \ona{n} ancilas, by the recursive relation for the binary search gate (\(b_m\)) in Figure 1, \( T(m)= m-1 + 2T(m-1)\). The recursive relation for the depth is \( D(n)=n + D(n-1) \). Hence, the depth of \(C_x\) is \ona{n}. As said above, Alice, Bob and R, holds for every  \( \ket{x} \in \{0,1\}^n \) a circuit \(C_x\) so the total space complexity is \ona{2^n \cdot n}. 
 
-\textit{Third solution}, with \( 2\log(n) \) communication cost and \textbf{sub-exponential space}. Alice and Bob will divide their numbers into two slices, \(x=x_1x_2\) ( \(y=y_1y_2\) ) each at length \( \frac{n}{2} \) and repeat over the protocol above twice. Hence they will be required to hold only \( 2^\frac{n}{2}/n \) circuits.
+So Alice and Bob should first perform a classic binary search at \ona{\log(2^n)} time to find the circuits \(C_x , C_y\) according to their strings \(x,y\), then each of them reduces his number \(x\) (or \( y \)) into a state \( \ket{\psi} \in \mathcal{H}_{2^m} \) and send it to \(R\). Finally \(R\) perform the \textbf{SWAP} Test and deiced whether or not \(x = y\). Therefore the total running time that required to perform that protocol is \(
+    \mathcal{O}\left(log(2^n) + Depth(C_x) + \mathbf{SWAP}\right) = \mathcal{O}\left(n\right)      
+\).
+\begin{figure}[H]
+\includegraphics[scale=0.13]{binarysearch}
+\caption{Binary search gate, \(b_1\) plays the role of "terminate condition" and will turn a unique qubit such that \(b_m\ket{i}\ket{0}^{\otimes O(m)} \mapsto \ket{i}\ket{junk}\ket{0}^{i}\ket{1}\ket{0}^{m-i}\). }
+    \label{fig:simulation_cases}
+\end{figure}
 
 
+\begin{figure}[H]
+\includegraphics[scale=0.13]{binarysearch_2}
+\caption{The circuit \( C_x \) which transforms the state \(\ket{0}^{\otimes m}\) into \(\frac{1}{\sqrt{m}}\sum_{i}^{m}{X_{ik}\ket{i}}\). First transform the state into the uniform super position, and then applying a "kick phase" over each ket \( \ket{i} \). the \(b_m\) perform the transformation \(b_m \frac{1}{\sqrt{m}}\sum_{i}^{m}{\ket{i} \ket{0}^{\otimes m} } \mapsto \frac{1}{\sqrt{m}}\sum_{i}^{m}{\ket{i} \ket{0}^{i }}\ket{1}\ket{0}^{m - i }  \)  which enables to multiplies only the \(\ket{i}\)-ket by the \(X_{ki}\) phase. }
+    \label{fig:simulation_cases}
+\end{figure}
 
+\textit{Second solution}, with \( \log^2(n) \) communication cost and \textbf{sub-exponential space}. Alice and Bob will divide their numbers into \(\log(n)\) slices, \(x=x_1x_2...x_{\log(n)}\) ( \(y=y_1y_2...y_{\log(n)}\) ) each at length \( \frac{n}{\log(n)} \) and repeat over the protocol above \(\log(n)\) times, in each time Alice and Bob ask R if \(x_i = y_i\). Hence they will be required to hold only \( 2^{\frac{n}{\log(n)}} = 2^n/n \) circuits, which is equal to \ona{(1+\delta)^n} for every \(\delta > 0\).
+
+And that implies a sub-exponential memory complexity, \ona{ n\log(n)} time, and \ona{\log^2(n)} communication cost.   
 
 \end{enumerate}
 

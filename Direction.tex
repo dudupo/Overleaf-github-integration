@@ -1,0 +1,353 @@
+
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, total={7in, 8in}]{geometry}
+\usepackage{braket}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{graphicx}
+\usepackage{svg}
+\usepackage{media9}
+\usepackage{float}
+\usepackage{tikz}
+% \usepackage{biblatex} %Imports biblatex package
+
+\usepackage[
+backend=biber,
+style=alphabetic,
+sorting=ynt
+]{biblatex}
+
+\addbibresource{sample.bib} %Import the bibliography file
+
+\newcommand{\commentt}[1]{\textcolor{blue}{ \textbf{[COMMENT]} #1}}
+\newcommand{\ctt}[1]{\commentt{#1}}
+\newcommand{\prb}[1]{ \mathbf{Pr} \left[ {#1} \right]}
+\newcommand{\onotation}[1]{\(\mathcal{O} \left( {#1}  \right) \)}
+\newcommand{\ona}[1]{\onotation{#1}}
+\newcommand{\PSI}{{\ket{\psi}}}
+\newcommand{\LESn}{\ket{\psi_n}}
+\newcommand{\LESa}{\ket{\phi_n}}
+\newcommand{\LESs}{\frac{1}{\sqrt{n}}\sum_{i}{\ket{\left(0^{i}10^{n-i}\right)^{n}}}}
+\newcommand{\Hn}{\mathcal{H}_{n}}
+% \title{Understanding Quantum Computing}
+% \author{David Ponarovsky}
+% \date{July 2021}
+
+\newcommand{\Ep}{\frac{1}{\sqrt{2^n}}\sum^{2^n}_{x}{ \ket{xx}}}
+\newcommand{\HON}{\ket{\psi_{\text{honest}}}}
+\usepackage{multicol}
+% \usepackage{  }
+\setlength{\columnsep}{0.6cm}
+
+
+\begin{document}
+    
+\title{Weak qPCP (?)}
+    
+\maketitle
+\begin{multicols*}{2}
+
+% \paragraph{Definition.} \textit{we will say that an Hamiltonian set \( \mathcal{H} = \{ H_i \} \) is \textbf{\(\gamma\)-stable}  \ctt{CHANGE THE NAME}  if there is a constant \( \gamma > 0  \) such that for any state \( \PSI \) and the following enqulity holds:}
+% \begin{equation*}
+%     \begin{split}
+%         \braket{\psi|\frac{1}{|\mathcal{H}|^2}\sum{H_{i}^{2}}|\psi} \le \gamma \cdot \braket{\psi|\frac{1}{|\mathcal{H}|}\sum{H_{i}}|\psi}
+%     \end{split}
+% \end{equation*}
+
+\paragraph{Lemma.} \textit{ The promise problem \textbf{LH}\((k,a,b)\) such that \(a>\frac{9}{16} \) is \textbf{QMA}-complete. and there exist reduction that given a \textbf{LH}\((k,a,b)\) entity such that \(a < \frac{9}{16}\) returns \textbf{LH}\((k,a^\prime ,b^\prime)\) such that \textbf{(1)} \(a^\prime \ge \frac{9}{16}\), \textbf{(2)} the gap remains the same, \textbf{(3)} and the number of terms expand only by constant factor}.
+
+The proof is trivial. 
+
+\paragraph{Definition.} \textit{ Given Hamiltonian \( \mathcal{H} = \frac{1}{m}\sum_{i}{H_i}\) and a state \(\PSI\) we will define the \textbf{table form of} \( \PSI \) relative to \( \mathcal {H} \) to be the fowlling state over \(2n^2\) qubits: 
+\begin{equation}
+    \begin{split}
+        & \text{Tableform}[\mathcal{H}, \PSI ] =
+        \\ & \ \ \ \bigotimes\frac{1}{\sqrt{2}}\left(H_i\ket{\psi}\otimes \ket{\psi}+ \ket{\psi}\otimes H_j \ket{\psi}\right)
+    \end{split}
+\end{equation} We generalize that definition over set of states by  \(\text{Tableform}[\mathcal{H}, \Omega] = \{\text{Tableform}[\mathcal{H}, \PSI ] : \PSI \in \Omega \} \)}.
+
+% \paragraph{Definition.} \textit{ We will say that state \(\PSI\) is an \textbf{\(l,k\)-almost copies product } (or just \textbf{\(lk\)-ACP}) if for any pair of two substring of \(\PSI\) at length \(l\) differ by at most \(2k\) qubits.} \ctt{another constraint should be append to that definition, \(\mathcal{H}\) define exactly the different.}     
+
+\paragraph{Definition.} \textit{ Consider the \textbf{LH}\((k,a,b)\) and a space \(\Omega\) (not necessary vector space) such that the gap promise is valid only for states \(\in \Omega\). We will call to such problems \textbf{\(\Omega\)-weak promise local Hamiltonian} or just \textbf{\(\Omega\)-WLH}. Note, that every \textbf{LH}\((k,a,b)\) is also \textbf{\(\Omega\)-WLH} when \(\Omega\) is the whole space.}
+
+
+\paragraph{Lemma.} \textit{Let \( \mathcal{H} = \frac{1}{m}\sum_{i}{w_{i}H_{i}}\) be a \(k\)-local Hamiltonian over \(n\) qubits with week promise over \(\Omega\), namely \textbf{\(\Omega\)-WLH}. Denote it's gap \(a-b = \Delta\). Then there is an explicit polynomial reduction (In the hardness sense) to an instance of \textbf{Tableform[\(\mathcal{H}, \Omega\)]-WLH} \(k\)-Hamiltonian over \(2\cdot n^2\) qubits which with promise \( (a^\prime, b^\prime) \) and a gap \(\Delta^\prime \ge 1.1\Delta\).}
+
+\paragraph{Proof.} Consider a \(n \times n\) table such that each cell of the table holds \(2n\) qubits. And consider the Hamiltonian defined by
+\begin{equation}
+    \begin{split}
+        \mathcal{H}^\prime = & \frac{1}{m^2}\sum_{ij}{ \overset{2\cdot i\cdot j-1}{\overbrace{I \otimes  I \otimes .. \otimes  I} } \otimes \\ & w_{i}w_{j}\left(H_{i} \otimes I   + I \otimes H_{j}  \right) \otimes   I \otimes  .. \otimes  I }       
+    \end{split}
+\end{equation}
+Notice that each term act non trivaly on at most \(k\) qubits. In another hand, if there exist a state such that \( \bra{\psi}\mathcal{H}\ket{\psi} \ge a \) then the energy of the state \(\ket{\psi^\prime} = \bigotimes_{i,j}\frac{1}{\sqrt{2}}\left(H_i\ket{\psi}\otimes \ket{\psi}+ \ket{\psi}\otimes H_j \ket{\psi}\right)\) is also greater then \(a\). To see that let's analyze the contribution of the \(ij\)-term (up to \(w_{i}w_{j}\) factor): 
+
+\begin{equation*}
+    \begin{split}
+        & \overset{2\cdot i\cdot j-1}{\overbrace{I \otimes  I \otimes .. \otimes  I} } \otimes \\ & \left(H_{i} \otimes I   + I \otimes H_{j}  \right) \otimes   I \otimes  .. \otimes  I \ket{\psi^\prime} = \\
+        & ... \otimes \left(H_{i} \otimes I   + I \otimes H_{j}  \right)  \frac{1}{\sqrt{2}}\left(H_i\ket{\psi}\otimes \ket{\psi}+ \ket{\psi}\otimes H_j \ket{\psi}\right) \otimes .. =  \\ & 
+        ... \otimes \frac{1}{\sqrt{2}} \left( 2H_{i}\ket{\psi}\otimes H_{j}\ket{\psi} +  H_{i}^{2}\ket{\psi} \otimes \ket{\psi} + \ket{\psi} \otimes H_{j}^{2}\ket{\psi} \right) \otimes ... = 
+    \end{split}
+\end{equation*}
+
+% \begin{equation*}
+%     \begin{split}
+%          & ... \otimes \frac{1}{2} \left( 2H_{i}\ket{\psi}\otimes H_{j}\ket{\psi} +  H_{i}\ket{\psi} \otimes \ket{\psi} + \ket{\psi} \otimes H_{j}\ket{\psi} \right) \otimes ...
+%     \end{split}
+% \end{equation*}
+
+
+Hence by projecting over \(\bra{\psi^\prime}\) it sufficent to look only on the following inner product: 
+
+% \paragraph{} ddd
+\begin{equation*}
+    \begin{split}
+        & \frac{1}{\sqrt{2}}\left(\bra{\psi}H_{i}\otimes \bra{\psi}+ \bra{\psi}\otimes  \bra{\psi} H_{j}\right) \\ &  \frac{1}{\sqrt{2}} \left( 2H_{i}\ket{\psi}\otimes H_{j}\ket{\psi} +  H_{i}\ket{\psi} \otimes \ket{\psi} + \ket{\psi} \otimes H_{j}\ket{\psi} \right) = \\ &
+         \frac{1}{2} \left( 2\bra{\psi}H_{i}\ket{\psi}\cdot \bra{\psi}H_{j}\ket{\psi} + \bra{\psi}H_{i}\ket{\psi} \cdot \bra{\psi}\ket{\psi} + \\ & \ \   \bra{\psi}\ket{\psi} \cdot \bra{\psi}H_{j}\ket{\psi} \right)  
+    \end{split}
+\end{equation*}
+
+Therefore:
+\begin{equation*}
+\begin{split}
+    \Rightarrow \braket{\psi^\prime| \mathcal{H}^\prime | \psi^\prime } &= \frac{1}{2}\left(    \frac{1}{m}\sum_{i}\bra{\psi}w_{i}H_{i}\ket{\psi} \right)^2 + \\ & \frac{1}{2}\left( \frac{1}{m}\sum{w_{i}}  \right)\left( \sum_{i}\bra{\psi}w_{i}H_{i}\ket{\psi} \right)  
+\end{split}    
+\end{equation*}
+
+It follows immediately that the gap over the \textit{table state} is bounded by \( a^\prime - b^\prime = \frac{1}{2}\left( a^2 - b^2  \right) + \frac{\sum{w_i}}{2m}\left(a-b\right) = \frac{1}{2} \left( a-b\right)\left(a + b\right)  = \left(\frac{a + b}{2} + \frac{\sum{w_i}}{2m}  \right)\Delta \). By assuming \(a > \frac{9}{16}\) and \(a -b > \frac{1}{poly(n)} \) we obtain that \( \Delta^{\prime} > 1.1\Delta \) \( \square\) 
+
+\paragraph{NOTE.} If \(w_i < 0 \) we could replace the operator \(H_{i} \mapsto -H_{i}\) and it's still remain pauli operator.
+
+
+\paragraph{Weak qPCP theorem.} \textit{ \(\textbf{QMA} < \textbf{qPCP}\left( \log n , 2^n)\right) \)} 
+\paragraph{Proof.} Let \(\mathcal{H}\) be a local Hamiltonian. Let's repeat on the above construction in reqursive manner \( O(\log n) \) times, and denote the resoult by \(\mathcal{H}^{\star}\). Now if there exits, a state \( \PSI \) such that \( \braket{\psi|H|\psi} > a \) then it's clear that \( \text{Tableform}^{\log n}[\PSI] \) also has energy higher then \(a^{\prime}\) and in the same way if for every \(\PSI\) it holds that \( \braket{\psi|H|\psi} < b \) then the energy of every  \( \text{Tableform}^{\log n}[\PSI] \) will be less then \(b^{\prime}\). 
+
+\begin{figure}[H]
+  \centering
+    \includegraphics[width = 250pt]{outputt.jpg}
+    \caption{The final tableform state, will be a table of \(\Theta(2^n)\) cells, each cell holds super position above two tensored tableforms at lower depth.}
+    \label{fig:construction}
+\end{figure}
+
+\paragraph{Lemma.} \textit{Let \(J\) be cell at the lowest depth of the table. Then if \(\PSI\) is indeed a state in the reqursive tableform that were generated from \(\ket{\phi}\), then there is a set \( \left\{ H_1 , H_2 , H_3 .. H_{l \le \log n} \right\} \) such that:
+\begin{equation*}
+    \begin{split}
+        \ket{J} &=  \frac{1}{2^{\frac{l}{2}}}\left(a_{0}I + a_{1}H_{1} + a_{2}H_{1}H_{0} + .. + a_{l}H_{l}..H_{2}H_{1}H_{0}\right)\ket{\phi} 
+    \end{split}
+\end{equation*} }
+
+
+\paragraph{Proof.} By induction. base case: consider a single level construction. Then the table by definition is   \(\ket{\psi^\prime} = \bigotimes_{i,j}\frac{1}{\sqrt{2}}\left(H_i\ket{\psi}\otimes \ket{\psi}+ \ket{\psi}\otimes H_j \ket{\psi}\right)\). Let \(2\cdot(i,j)\) be an arbitrary cell.
+\begin{equation*}
+    \begin{split}
+        &  \frac{1}{\sqrt{2}}\left( H_i \otimes I + I \otimes H_j \right) \ket{\psi}\otimes  \ket{\psi} \Rightarrow \\
+        & \ket{J} = \left(\sum{\ket{n}\bra{n} \otimes I }\right)\frac{1}{\sqrt{2}}\left( H_i \otimes I + I \otimes H_j \right) \ket{\psi}\otimes  \ket{\psi} \\ 
+        & 
+    \end{split}
+\end{equation*}
+Assume the correctness of the Lemma for every \(n^\prime < n+1\), that is, every cell in the \(n\)-stage table can be expressed as linear combination of at most \(\log_n\). So we get that:
+\begin{equation*}
+    \begin{split}
+        \frac{1}{2^{\frac{l}{2}}}\left(a_{0}I + a_{1}H_{1} + a_{2}H_{1}H_{0} + .. + a_{l}H_{l}..H_{2}H_{1}H_{0}\right)\ket{\phi} 
+    \end{split}
+\end{equation*}let's fix again a cell \((i,j)\) 
+
+\paragraph{Lemma.} \textit{ Consider the product of \(\ket{\psi}\otimes\ket{\phi}\) there is a test which measure only \( O(1) \) qubits, accept with probability \(1\) if the states are equal and otherwise reject with probability \( p \).} 
+\paragraph{Proof.} Perform the \textbf{SWAP} test on single arbitrary qubit. Assume that \( \ket{\psi} = \sum{w_i \ket{i}} \) and \( \ket{\phi} = \sum{w^{\prime}_i \ket{i}} \). Then the probability to measure \( \ket{0} \) is:
+\begin{equation*}
+\begin{split}
+& \braket{0|0} = \frac{1}{2}\left(1 +  \frac{1}{n}\sum_{k}{ \bra{\psi , \phi}\textbf{SWAP}^{k}_{1} \ket{\psi, \phi}}   \right)  \\ 
+& \bra{\psi , \phi}\textbf{SWAP}^{k}_{1} \ket{\psi, \phi} = \\& \sum{\braket{\psi^{i}_{1}..\phi^{j}_{k}..\psi^{i}_{n}\phi^{j}_{1}..\psi^{i}_{k}..\phi^{j}_{n}|\psi^{l}_{1}..\psi^{l}_{n}\phi^{m}_{1}..\phi^{m}_{n}}w_{i}w^{\prime}_{j}w_{l}w^{\prime}_{m}} = \\& \sum{\braket{\psi^{i}_{1}..\phi^{j}_{k}..\psi^{i}_{n}\phi^{j}_{1}..\psi^{i}_{k}..\phi^{j}_{n}|\psi^{l}_{1}..\psi^{l}_{n}\phi^{m}_{1}..\phi^{m}_{n}}w_{i}w^{\prime}_{j}w_{l}w^{\prime}_{m}}
+\end{split}    
+\end{equation*}
+
+For each \(i,j\) pair there is a four pairs \(m,l\) such that the braket above is non zero, that because we can choose either \( l = m \) or that \(m = l \oplus e_{k} \). Let's compute each option separately:
+
+\begin{equation*}
+    \begin{split} 
+        & \sum{\braket{\psi^{i}_{1}..\phi^{j}_{k}..\psi^{i}_{n}\phi^{j}_{1}..\psi^{i}_{k}..\phi^{j}_{n}|\psi^{i}_{1}..\psi^{i}_{n}\phi^{j}_{1}..\phi^{j}_{n}}w^{2}_{i}w^{\prime 2 }_{j}} = \\ 
+        & \sum{\braket{\psi^{i}_{k}|\phi^{j}_{k}}^2w^{2}_{i}w^{\prime 2 }_{j}} = \sum_{i[k]=j[k]}{w^{2}_{i}w^{\prime 2 }_{j}} \Rightarrow 4 \sum_{i[k]=j[k]}{w^{2}_{i}w^{\prime 2 }_{j}} 
+    \end{split}
+\end{equation*}
+
+We would expect that if the wights were disturbed uniformly then: 
+\begin{equation*}
+    \begin{split}
+        \mathbb{E}\left[\sum_{i[k]=j[k]}{w^{2}_{i}w^{\prime 2 }_{j}}\right] &= \mathbb{E}\left[\sum_{i[k] \neq j[k]}{w^{2}_{i}w^{\prime 2 }_{j}}\right] \\
+        \Rightarrow \mathbb{E}\left[\sum_{i[k]=j[k]}{w^{2}_{i}w^{\prime 2 }_{j}}\right] &= \frac{1}{2} \mathbb{E}\left[\sum_{ij}{w^{2}_{i}w^{\prime 2 }_{j}}\right] = \\ &= \frac{1}{2}\mathbb{E}\left[\sum_{i}{w^{2}_{i}}\right]\mathbb{E}\left[\sum_{j}{w^{\prime 2}_{j}}\right]\\ 
+        &= \frac{1}{2}\braket{\psi|\psi}\braket{\phi|\phi}
+    \end{split}
+\end{equation*}
+
+% \(\rightarrow\) If we could restrict our self only to tablesform states then we win. (we just need to apply the machinery of constant-gap after verify that the given state is indeed a tableform state). 
+
+% Assume that we know what was the original form of \( \mathcal{H} \). Let \( \ket{\phi} \) be a state such that \(d\left( \ket{\phi},\textit{Tableform} \right) \ge d \cdot n \) that mean there is at least \(d\) leafs positions in the tree such the state which lay there.  Then we can a uncompute a single branch of the reqursive tree and by that "restore" the original state \( \PSI \). By choosing randomly pair of \(n\)-length slice of qubits (which mach to cells), we verify their uncompute by SWAP test. 
+% So, let's attach to the beginning of the proof the classic encoding of the original Hamiltonian and we have done.      
+
+% % \paragraph{Proof:} The proof it's treival, Let \(H\) be our original Hamiltonian and Consider the Hamiltonian which got by taking the weighted average of it with the identity. \(\square \)    
+
+
+
+% \paragraph{Definition.}
+
+% \paragraph{Definition.} \textit{ for a given state \(\ket{\psi} = \sum_{j}{\prod_{i}{\ket{x_{i}^{j}}}}\) we say that a unitary gate \(U\) \textbf{mixes} \(\ket{\psi}\) if there is bijection \( f\left(i,j\right) \mapsto \left(i^\prime,j^\prime\right)\) such that \(U\ket{\psi} = \sum_{j^\prime}{\prod_{i^\prime}{\ket{x_{i^\prime}^{j^\prime}}}}\). For a given set of states \(A\) and a gate \(U\) such that \(U\) mixes all the elements in \(A\) we will say that \(U\) mixes \(A\).}
+
+% \paragraph{}
+% Note that there is no exist a unitary gate which mix all the space \( \mathcal{H}^{*}\).  
+
+% \paragraph{Definition.} \textit{ Let \(\Gamma\) be a constant integer, and \(\{I_{k}\}\) be a parttion over \(\mathbb{F}_{2}^{n}\) such \(\vert I_k \vert = \Gamma\). In addition consider a vector \(\phi_{0} \in \mathbb{F}_{2}^{n}\). A sate \(\ket{\psi}\) will called a \textbf{linear proof} if there are \( \left(\Gamma,\{I_k\}, \phi_0 \right)\) defined as above such: \begin{equation}
+%     \ket{\psi} \propto \sum_{k}{\prod_{r \in I_{k}}{\ket{r,r \cdot \phi_{0}}}}
+% \end{equation} till a normaliztion factor.}
+
+% Notice that if a gate \(U\) mixes an linear proof \(\ket{\psi}\) then it will the turned state \(U\ket{\psi}\) is also a linear proof.    
+
+% \paragraph{Definition.} \textit{An  \textbf{almost linear proof} will defined almost indentical to linear proof, except that now we replace the \(\psi_0\) parameter by asirea \(\{ \phi_{0}^{k} \}\) such that: \begin{equation}
+%     \ket{\psi} \propto \sum_{k}{\prod_{r \in I_{k}}{\ket{r,r \cdot \phi_{0}^{k}}}}
+% \end{equation} till a normaliztion factor.}
+
+% Notice that by eaxmining only a single ket one can't distinguishing between an \textit{almost linear proof} and \textit{linear proof}. 
+
+% \paragraph{Proposition.} \textit{Fix a constant integer \(\Gamma\), for every integer \(n\), Denote by \(A_n\) the set of all the almost linear proofs over \(n\) qubits  then there exists a unitary gate which mixes \(A_n\). }
+
+% \textbf{Proof:} for \(n = \log\Gamma\). 
+
+% \section{Property testing.} 
+% The algorithm works as follow. An honest prover send the state:
+% \begin{equation}
+%     \HON = \sum_{k}{\prod_{r^{k}_{j} \in I_{k}}{\ket{r^{k}_{j},r^{k}_{j} \cdot \phi_{0}}}}
+% \end{equation} 
+% Then the verifier test by the classic weak-pcp check (measuring an ancila). If the given state pass the test then the verifier applies a generalize mixing and perform a second check.    
+% \paragraph{Completeness} If \( \ket{\psi} =_{\sim I} \HON \) then it's clear that the first check pass with probability 1. Then in the second stage the mixed state is also \(=_{\sim I} \HON\) and therefore it will also pass the second check with probability 1.   
+% \paragraph{Soundness} Suppose that 
+% \begin{equation}
+%      \vert\vert\braket{\psi|\psi_{\text{honest}}}\vert\vert^2 \le 1 - \varepsilon^{\star}
+% \end{equation} 
+% and denote by \(\varepsilon, \bar{\varepsilon}\) the sum of weight of the kets such that pass the the classic PCP test and don't accordingly. The first test fail to pass with probability at least \(\varepsilon\).   
+
+
+% \paragraph{The Problem.} \(n\)-EPR pairs could be thought as resources in distributed computing with application in wide range of fields from the private key distribution till quantum teleportation. In this paper we consider an environment (ecosystem) in which one entity generate an highly entanglement state and sharing it between two other players who holds only a limited quantum ability. As the EPRS factory might be faulty we would like to verify that players indeed holds the correct state. And to ensure that the above indeed make sense we also require that only a minimal of EPRs will be measurement at the   verification process.
+
+% Formally, we interest in verification protocol which compose from the following stages:
+% \begin{enumerate}
+%     \item \textbf{Initialization}, the factory initialize encoding of the EPR product and transmit to each player he's share.
+%     \item \textbf{Verification}, the players are which limited only to single-qubit operations and measurements, and classical communication try to validate that they are indeed entanglement. 
+%     \item \textbf{Decoding} if the players choose to accept the state then they could uncompute the encoding (restore the EPR product). 
+% \end{enumerate}
+% The idea behind the above form is that passing through a quantum channel is the most vulnerable stage in the total computation and therefore we are wishing to isolate it. Note that we are interesting in protocols in which the verification process pass for all the correct states and rejects with probability that proportional to the distance between the given state and the excepted one (in non faulty model).
+
+
+% \ctt{delete} that it's success probability is function of both the rounds number it lasts and also the distance of the given state from the \(n\)-EPR state. Denote by \(\ket{\phi} \in \mathcal{H}^{poly(n)}\) the given state. And by 
+% \begin{equation*}
+% \begin{split}
+%     \ket{\psi_n} = f \circ \bigleft( \frac{1}{\sqrt{2^n}}\sum^{2^n}_{x}{ \ket{xx}}  \bigright)
+% \end{split}
+% \end{equation*}
+% for function \(f : \mathcal{H}^{poly(n)} \mapsto \mathcal{H}^{poly(n)}\). Denote by \(\mathcal{A}\) that algorithm, then there is a function \(g : \mathbb{N} \times (0,1) \rightarrow (0,1) \) :
+% \begin{equation*}
+%     \begin{split}
+%         \prb{ \mathcal{A} \text{ reject} \ket{\phi}   } &\ge g\left( \text{time},d\left(\phi , \psi_{n} \right) \right)   
+%     \end{split}
+% \end{equation*}
+
+% For example the algorithm which choose at each round a random pair of adjacent qubits, and then use them to play the Latin Square Game, fit for the setting above where \( f = \mathbf{I}\) and \( g(\text{rounds}) = \text{rounds}/n\). As far as we know there aren't results for protocols which their corresponded function \(g\) depends also on the distance. 
+
+
+
+% \section{The Protocol.} 
+% The verification protocol divide into two parts, first each party tests that he indeed holds a uniform superposition. We call that part \ctt{Thinks about a cool name}. Note that in the each party lab frame, the qubits state is an eigen state for X-Pauli errors, So if we have pass the phase error detection then it's only left to check that the state are don't have a "phase gap in the bits space". 
+% \paragraph{Uniform superposition validation.}
+% The factory wish to transmit the state \( \ket{\psi_n} = \Ep \). As the the left-\(n\) (right) qubits define the the left-\(x\) of \( \ket{\psi_n} \) kets then we could encode each of the halves separately  by generator \(G\) and initialize the state \( \frac{1}{\sqrt{2^n}}\sum^{2^n}_{x}{ \ket{G(x)G(x)}} \).
+
+% Now after the transmission each party apply the error detection procedure. (And reject by probability proportional to the bit-flip distance between the state if a LTC code has been used). Note also that the encoded space is a uniform super position over the classical code words of \( \mathcal{C} \) and the phases are   By isomorphimsem we could assume that As the phase and the bit space are   It will be convenient to us      
+
+% % \paragraph{Lemma I.} \textit{ Let \(\mathcal{C}\) be a Code with dimension \(O(1)\) fix+  }
+
+
+% \paragraph{Proposition I.} \textit{Given a classic LTC  \(\mathcal{C}\) with \(\left[ n, \Theta(n), \Theta(n)  \right]\) parameters and a quantum LTC \(\mathcal{Q}\) with \(\left[ n, O(1), \Theta(n)  \right]_{q}\). Then one can construct a \(c^{3}\) quantum code}.
+
+% \paragraph{Proof.} First, we will show explicitly the encoder gate. Let \(k\), \(m > k\) integers numbers, and \(J\) a subset of \(\left[m\right]\) such \(|J| = k\). Denote by \( \mathcal{T}_{J} : \mathcal{H}^{k+2m+k}_{2} \mapsto \mathcal{H}^{k+2m+k}_{2}  \) the quantum gate which first initializes \(m\) EPR pairs and then uses the \(J\) EPR's to transfer by teleportation the state defined by the first \(k\)-qubits to the last \(k\)-qubits with one exceptional change, we replace the measurements by cnot's. 
+
+% Hence, the classic bit string which the parities transmitted through the channel is replaced by a the superposition over all the possible classic strings. 
+
+
+
+
+
+% \paragraph{Proposition.} \ctt{Lemma.} For infinitely many \(n \in \mathbb{N}\) there is a constant depth circuit which verify uniform superposition with probability at least \(\alpha\) \ctt{complete}. 
+
+% \textbf{Proof:} Assume that each ket of the state encoded by the LTC \( \mathcal{C} \), with generator matrix \(G\). And first apply the classic test over the state. 
+
+% \begin{equation*}
+%     \begin{split}
+%         \prb{\text{ reject} \ket{\phi} } &= \bra{\cdot} \sum_{x \in [2^n] }{ \ket{x}\braket{x|\phi} \prb{\text{ reject x }  } } \\ 
+%         &\ge \sum_{x \in [2^n] }{ ||\braket{x|\phi}||^{2} \frac{\omega}{m} d\left(x,\mathcal{C} \right) } \\ 
+%         &= \sum_{x \notin \mathcal{C} }{ ||\braket{x|\phi}||^{2} \frac{\omega}{m} d\left(x,\mathcal{C} \right) } \\ 
+%         &= \frac{\omega}{m} d\left(\phi,\mathcal{C} \right)
+%     \end{split}
+% \end{equation*}
+% Hence if we pass the test defined by \( \mathcal{C} \) then till a \(Z\)-errors we are \(\delta\)-far from \( \ket{u_n} \). Diagonalize the state by H  the So it's sufficient to check that  
+
+% \paragraph{Clocks syncorniztion.} from 
+
+% \section{Different Points of View.}
+
+% \paragraph{Locally Testable Codes.} Assume for the moment the existence of quantum locally testable code (qLTc). Then there is a local Hamiltonian that applying a random term of it over the state will measure energy above \( \gamma \) with probability greater then \( \frac{\omega}{m} d\left(\phi , \psi \right)\). Then the factory might pass the encoded state to the clients and. \ctt{...}  
+% \paragraph{Alice-Bob Verification Game. } We could also think about a game in which a judge \(R\) try to verify that the parties \(A\) and \(B\) share an entangled state.  
+
+% \paragraph{Definition. Leader Election State (LES).} For every \(n \in \mathbb{N} \) define the state \( \LESn \) to be  \begin{equation*}
+%     \LESn = \LESs
+% \end{equation*}  
+
+% \paragraph{Proposition} There is a polynomial circuit that generate \(\LESn \). 
+
+% \textbf{Proof.} Assume by induction correction for every \(n^{\prime} < n\). Then denote by \(U\) the gate which transform \(\ket{0}\) into the state \(\ket{\psi_{\frac{n}{2}}}\). \ctt{Handle the case where n is odd}.       
+ 
+% \begin{figure}[H]
+%   \centering
+%     \includesvg[width = 250pt]{Gate.svg}
+%     \caption{Comparison between}
+%     \label{fig:average-sim-vs-model}
+% \end{figure}
+% The Depth of the circuit defined by recursive relation. 
+% \begin{equation*}
+% \begin{split}
+%     \textbf{Depth}\left(n\right) &=\textbf{Depth}\left(\text{control-}U\right) + O\left(1\right) \\ & =\textbf{Depth}\left(U\right) + \textbf{Depth}(U^{\dagger}) + O\left(1\right) \\ &= 2\cdot\textbf{Depth}\left(\frac{n}{2}\right) + O\left(1\right) = O\left(n\right) \ \square
+% \end{split}
+% \end{equation*}
+% \paragraph{}
+% Then by the Theorem of Legal (guided local Hamiltonain is BQP-hard).\ctt{Spell the name and add citaion}. There exists a local Hamilton, such it's ground state has an overlap of at least \( \frac{1}{2} - \frac{1}{\text{poly}} \) with the history state. (the history state is the guided state (or the hint state) in he's reduction). From now on we will denote the Humiliation which corresponds to \( \LESn \) by \( \Hn \).  
+
+% \paragraph{Assume} that the \textbf{NLTS} conjecture isn't correct. Then there is a trivial gate (with constant depth) which generate a state that approximate good as we wish the the ground state of \( \Hn \) and therefore also has \(\sim \frac{1}{2} \) overlap with the history state. \ctt{require a proof}.
+
+% \paragraph{Proposition} For any \( n \in \mathbb{N}\) there is a trivial state which has \(\sim \frac{1}{2}\)-overlap with \( \LESn\). Denote it by \(\LESa\). \ctt{require a proof}.
+
+% \paragraph{Proposition} There is a communication protocol which compute the \( \LESa \) in fixed number of rounds and every party communicate with a constant number of other parties. 
+
+% \paragraph{Proposition} There is a asynchronous communication 1-resilient protocol which compute the \( \LESa \) in fixed number of rounds. Notice that probability to succeed doesn't depend on the enemy strategy.
+
+% \textbf{Proof:} As every elementary quantum gate act over at most fixed number of qubits, then in every fixed depth/rounds circuit/protocol each gate could be feed with at most fixed number of non-honest inputs (\(f\)). Then we could divide each computation stage in our non-resilient protocol, which defined above, into groups of 
+% \begin{equation*}
+%     g = 4\left(f+1\right) + 1
+% \end{equation*} parties and compute the gates via quantum Byzantine resilient protocol \ctt{the '\(+\)' inside the closures is critical}. Where passing \(\ket{0}^{\otimes n^{2}}\) (the input) is also considered as calculation step (gate), In our case \(f=1\). 
+
+% For promising termination every honest party wait till he gets \(g - 1\) inputs, then he sets the last required message/pin to \(\ket{0}\) (\ctt{translate arbitrary error}), and continue forward to the error correction stage.
+
+% \ctt{completing proof,  requires to handle the case when party should participate at the same time in two different groups. We should show that the depth overhand factor is a constant.}     
+
+% % \paragraph{Proposition} \ctt{I don't sure that this proposal is true.} There is a asynchronous communication 1-resilient protocol which elects a leader, success with a.s probability and takes at most a fixed number of rounds.
+
+
+
+% % \section{ Phase Estimation }
+% % \input{PhaseEstimation}
+% % \section {QMA}
+% % \input{QMA}
+% % \section{Bzyantine}
+% % \input{Bzyantine}
+
+
+% \printbibliography 
+\end{multicols*}
+\end{document}

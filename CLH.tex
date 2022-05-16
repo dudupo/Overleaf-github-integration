@@ -1,0 +1,75 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, total={6in, 8in}]{geometry}
+\usepackage{braket}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+
+% \usepackage{biblatex} %Imports biblatex package
+
+\usepackage[
+backend=biber,
+style=alphabetic,
+sorting=ynt
+]{biblatex}
+
+\addbibresource{sample.bib} %Import the bibliography file
+
+\newcommand{\commentt}[1]{\textcolor{blue}{ \textbf{[COMMENT]} #1}}
+\newcommand{\ctt}[1]{\commentt{#1}}
+\newcommand{\prb}[1]{ \mathbf{Pr} \left[ {#1} \right]}
+\newcommand{\onotation}[1]{\(\mathcal{O} \left( {#1}  \right) \)}
+\newcommand{\ona}[1]{\onotation{#1}}
+% \newcommand{\cal}{\mathcal}
+
+\newcommand{\eps}{\epsilon}
+
+\title{CLH}
+\author{David Ponarovsky}
+% \date{Aug 2021}
+\begin{document}
+\maketitle
+
+\paragraph{Definition 1} 
+We say that such a graph is an $\epsilon$ small-set bi-partite
+expander, if for any set $S$ of size at most $k$ particles, the number of local
+terms incident on these particles is at least $D_R |S| (1-\epsilon)$, where
+$D_R$ is the right degree of the graph.
+We note that
+$D_R |S|$ is the maximal possible number of constraints acting on those
+particles, so $\epsilon$ can be viewed a ``correction'' to this number.
+
+\paragraph{Fact 1}
+Consider $S\subseteq R$  in a bi-partite graph $G(R,L:E)$
+and let $S$ $\epsilon$-expanding, for $\eps<\frac{1}{2}$.
+Then a fraction at most $2\eps$ of all
+vertices of $\Gamma(S)$ have degree strictly larger than $1$ in $S$.
+
+\paragraph{Fact 2}
+Let $S\subseteq R$ in a bi-partite graph $G = (R,L;E)$, such that $S$ is $\eps$ expanding.
+Then there exists a vertex $q\in S$,
+such that the fraction of neighbors of $q$ with at least two neighbors in $S$
+is at most $2\eps$.
+
+\subsection{Commuting terms and \texorpdfstring{$C^*$}{TEXT}-algebras}\label{sec:bv}
+We now state the lemma of Bravyi and Vyalyi \cite{Bra} precisely:
+\begin{lemma}\label{lem:BV}
+Let $H_i,H_j$ be two local terms on Hilbert space ${\cal H}$, $[H_i,H_j]=0$.
+Let ${\cal H}_{int}$ denote the intersection of $supp(H_i)\cap supp(H_j)$, where $supp(H)$ is the subset of qudits examined non-trivially by $H$.
+Then, there exists a direct-sum decomposition
+$${\cal H}_{int} = \bigoplus_{\alpha} {\cal H}_{int}^{\alpha},$$
+where for each $\alpha$ we have:
+$${\cal H}_{int}^{\alpha} = {\cal H}_{int}^{\alpha,i}\otimes {\cal H}_{int}^{\alpha,j},$$
+such that
+both $H_i,H_j$ preserve all subspaces ${\cal H}_{int}^{\alpha}$, and moreover,
+for each $\alpha$ $H_i|_{\alpha}$ is non-trivial only on the Hilbert space ${\cal H}_{int}^{\alpha,i}$,
+whereas $H_j|_{\alpha}$ is non-trivial only on the Hilbert space ${\cal H}_{int}^{\alpha,j}$.
+\end{lemma}
+
+
+
+
+% \printbibliography 
+
+\end{document}

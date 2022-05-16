@@ -1,0 +1,161 @@
+
+
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, total={6in, 8in}]{geometry}
+\usepackage{braket}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage[english]{babel}
+\usepackage{amsthm}
+\usepackage{amssymb}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{proposition}[theorem]{Proposition}
+% \usepackage{biblatex} %Imports biblatex package
+
+\usepackage[
+backend=biber,
+style=alphabetic,
+sorting=ynt
+]{biblatex}
+
+\addbibresource{IdeaBib.bib}
+
+\begin{document}
+
+\newcommand{\commentt}[1]{\textcolor{blue}{ \textbf{[COMMENT]} #1}}
+\newcommand{\ctt}[1]{\commentt{#1}}
+\newcommand{\prb}[1]{ \mathbf{Pr} \left[ {#1} \right]}
+\newcommand{\onotation}[1]{\(\mathcal{O} \left( {#1}  \right) \)}
+\newcommand{\ona}[1]{\onotation{#1}}
+
+\newcommand{\GG}{\tilde{G} }
+\newcommand{\TGG}{\(\tilde{G}\) }
+\newcommand{\Prb}[1]{ \mathbf{Pr}\left[ {#1} \right] }
+\renewcommand\qedsymbol{$\blacksquare$}
+
+\newcommand{\Htr}[1]{\tilde{H}_{#1}}
+\newcommand{\Ht}{\Htr{l}}
+\newcommand{\Htp}[2]{ \Htr{#1}\left(\ket{#2}\right)  }
+\newcommand{\ps}{\ket{\psi}}
+\newcommand{\hpst}{\left( H, \ps \right)}
+\newcommand{\Ham}{Hamiltonian }
+
+\title{Subset-sums equality \( \in \) BQP}
+\author{David Ponarovsky}
+\maketitle
+
+\paragraph{} \ctt{Work on progress.} 
+\begin{enumerate}
+    \item Add tickz plot of \(\Ht\).
+\end{enumerate}
+
+\section{Subset-sums Equality \(\in\) BQP (pigeonhole version)} 
+\paragraph{Problem:} Let  \( a_1,a_2,\ldots,a_n\) be natural numbers with \( \sum_{i=1}^{n}{a_i} < 2^{n} - 1 \). It follows from the pigeon-hole principle that there exist distinct subsets \( I,J \subseteq \{1,\ldots,n\} \) with \( \sum_{i \in I} a_i = \sum_{j \in J} a_j\). Is it possible to find such a pair \( I, J\) in polynomial time? 
+
+Remark, without the constrain  \( \sum_{i=1}^{n}{a_i} < 2^{n} - 1 \) the problem is NP-complete. 
+\paragraph{Approximation version. Subset-Sums Ratio problem. (SSR).} Let \( a_1,a_2,\ldots,a_n\) defined as above. And let \( \varepsilon > 0  \). Find a   distinct subsets \( I,J \subseteq \{1,\ldots,n\} \) with \( \frac{\sum_{i \in I} a_i}{\sum_{j \in J} a_j} < 1 + \varepsilon \).  (assuming that the sum of \(I\) is greater then the sum of \(J\)). The fastest classical approximation algorithm to that problem require \ona{ \frac{n^4}{\varepsilon} } \cite{Melissinos_2018}. 
+
+\begin{proposition}
+    There is a quantum algorithm (circuit) that with high probability find such \(I,J\) and require \ona{\frac{n}{\varepsilon^2}\log^c\left(\frac{n}{\varepsilon}\right)} time.   
+\end{proposition}
+
+\begin{lemma}
+    Denote by \(S\) the operator \( \frac{1}{2}\left(\mathbb{I} + \mathbf{SWAP} \right) \). \( S\) is unitary.  
+\end{lemma}
+\begin{proof}
+    Notice that \(S^\dagger = \frac{1}{2}\left(\mathbb{I}^\dagger + \mathbf{SWAP}^\dagger \right) = \frac{1}{2}\left(\mathbb{I} + \mathbf{SWAP} \right) = S \Rightarrow S^\daggerS  = S^2=\frac{1}{4}\left(\mathbb{I} + \mathbf{SWAP} \right)\left(\mathbb{I} + \mathbf{SWAP} \right) = \frac{1}{4}\left(2\mathbb{I} + 2\mathbf{SWAP} \right)\)= \( S\). In the other hand, the \(S\) is 
+\end{proof}
+
+\paragraph{Proof (algorithm) review. (unformal)} suppose we have a gate \( T \) such that \begin{equation*}
+    T \ket{I,J} = e^{\frac{1}{2^n}i\left(w_I - w_J \right) }\ket{I,J}  
+\end{equation*} 
+and from now on, we will write for convenient \( T \ket{I,J} = e^{i w_{IJ}  }\ket{I,J}  \). Denote by \( S \) the gate \( S = \frac{1}{\sqrt{2}}\left(\mathbb{I} + \mathbf{SWAP}\right) \Rightarrow S\ket{I,J} = \frac{1}{\sqrt{2}}\left( \ket{I,J} + \ket{J,I} \right) \).  And by \(U\) the chained gate \( U = ST \). Hence, \begin{equation*}
+    U\left(\ket{I,J} + \ket{J,I}\right) = S\left(e^{iw_{IJ}}\ket{I,J} + e^{-iw_{IJ}}\ket{J,I}\right) = \sqrt{2}\cos\left( w_{IJ} \right)\left(\ket{I,J} + \ket{J,I}\right)
+\end{equation*}
+and therefore, when applied on the uniform superposition over all the possible \(I,J\) pairs we get: 
+\begin{equation*}
+\begin{split}
+    U\sum_{I,J\subset [n]\times[n]}{\ket{I,J}} & =  U\sum_{I,J\subset [n]\times[n] \ \text{and} \ w_{I}=w_{J}}{\ket{I,J}} + U\sum_{I,J\subset [n]\times[n] \ \text{and} \ w_{I} \neq w_{J}}{\ket{I,J}}  \\
+    & = U\sum_{I,J\subset [n]\times[n] \ \text{and} \ w_{I}=w_{J}}{\frac{1}{2}\left(\ket{I,J}+ \ket{J,I}\right)} + \\ & \ \  \ \ \ \ + U\sum_{I,J\subset [n]\times[n] \ \text{and} \ w_{I} \neq w_{J}}{\frac{1}{2}\left(\ket{I,J}+ \ket{J,I}\right)} \\ 
+    & = \sum_{I,J \ w_{I}=w_{J}}{\ket{I,J}} + \sum_{I,J \ w_{I} \neq w_{J}}{\cos\left( w_{IJ} \right)\ket{I,J}} 
+\end{split}
+\end{equation*}
+And after repeating \(k\) times we get that 
+\begin{equation*} 
+    U^{k}H^{n}\ket{0} = \sum_{I,J \ w_{I}=w_{J}}{\ket{I,J}} + \sum_{I,J \ w_{I} \neq w_{J}}{\cos^{k}\left( w_{IJ} \right)\ket{I,J}}
+\end{equation*}. Let \( \ps = \sum_{I,J \ w_{I}=w_{J}}{\ket{I,J}} \), then we can bound the probability to measure state in the support of \( \ps\) is greater then: 
+\begin{equation*}
+    1 -\sum_{I,J \ w_{I} \neq w_{J}} {\bra{I,J}\cos^{k}\left( w_{IJ} \right)\ket{I,J}} \ge 1 - M\cdot\max_{I,J \ w_{I} \neq w_{J}}{\bra{I,J}\cos^{k}\left( w_{IJ} \right)\ket{I,J}} 
+\end{equation*} when \(M\) is the number of terms such that \(w_I \neq w_J\).
+
+Denote the minimum gap by \( \Delta \) i.e \( \Delta = \min_{I,J \ w_{I} \neq w_{J}}{\left( w_{IJ} \right)} \) if \( \Delta \in Poly\left( \frac{1}{n}\right) \) then it's clear that after polynomial number of repetitions w.h.p probability we will measure a state in the the support of \( \ket{\psi} \), and with a conditional probability which is at least \(\frac{1}{n+1} \) the state \( \ket{I,J} \) will satisfy \( I \neq J \). Consider the case where \( \Delta \in \Omega\left( 2^{-n} \right) \Rightarrow \cos\left( \Delta \right) \sim 1 - \frac{1}{2^{2n}}\). In that case we will want to calculate the gate \(U^{2^{j}}\) efficiently.    
+
+\begin{conjecture}
+There is a polynomial depth quantum circuit that compute \( U^{2^{j}} \).   
+\end{conjecture}
+
+%%    each problem that it's solution can be verified      circuit the  Quantum  probabilistically checkable proofs. QMA, the class of that problems
+
+\section{Local Test For 1D 2-local Hamiltonian.}
+
+\paragraph{Preamble.} The qPCP conjecture states that all the decision problems with polynomial-time verifiable proof also have a probabilistic proof that their verification requires measuring only a "few" random qubits from it. The classic theorem is proved by showing that if an optional witness invalidates more than one restriction (i.e., in the k-coloring problem), then there is a reduction to another problem in which the mapped witness invalidates a constant fraction of the restrictions. 
+
+That process could be thought of as scattering a local error over the global domain.
+\ctt{Add description of the 1-D, 2-local Hamiltonian.  }
+Theorem: QMA-complete even when 2-local on a line of 8-dimensional qudits, i.e. when the
+qudits are arranged on a line and only nearest-neighbour interactions are present [proven by Nagaj6 \cite{hallgren2013local}.
+
+\begin{definition} Consider the an \textbf{1D}, 2-local Hamiltonian \(H = \frac{1}{m}\sum^{m}_{i=0}{H_i}\) over a linear chain of d-qudits.   Let \( \Ht:\mathcal{H} \mapsto \mathbb{R} \) for 
+\( l \le m \) be the function, such for every state \( \ket{\psi} \in \mathcal{H} \), \begin{equation*}
+    \Ht\left(\ket{\psi}\right) = \frac{1}{m}\braket{\psi|\sum^{l}_{i=0}{H_i}|\psi} 
+\end{equation*}  . 
+\end{definition}
+
+\begin{definition} Let \(i \le j \le m \in \mathbb{N} \) such that \( \Htp{i}{\psi} = \Htp{j}{\psi} = 0 \) and for every \( t \in (i,j) \Rightarrow  \Htp{t}{\psi} \neq 0 \). , then the \([i,j]\)-segment will be said  \(\ps\)\textbf{-Positive Segment}. The length of the segment is \( |j-i|\). From the definition it's directly follows that \(\ps\) is the ground state of \(H\) iff there is integer set \( i_1 , i_2 ... i_k \) such that \(i_{j+1} < i_{j}\), \(i_{1} = 0\), \(i_{k} = m\) and each of the segments \( [i_{j},i_{j+1}] \) is a \(\ps\)-Positive Segment. We will call to such sets the \textbf{zeros} of \( \left( H, \ps \right) \).
+\end{definition}
+
+\begin{lemma} Let \(S\) be zeros set of \(\hpst \). If \(|S| \ge \sqrt{n} \) then there are at least \( \frac{\sqrt{n}}{2} \) \(\ps\)-positive segments in \(S\) at length less then \(2\sqrt{n}\). 
+\end{lemma}
+
+\begin{proof} By contradiction, denote by \( T \) the \( \ps\)-positive segments at length less then \( \sqrt{n}\) and assume \( |T|  < \frac{1}{2}\sqrt{n} \). Then the total length of the positive segments is \begin{equation*}
+\begin{split}
+    \sum_{[i_{j},i_{j+1}]:i_{j}\in S}{|i_{j+1}-i_{j}|} &= \sum_{[i_{j},i_{j+1}]\in T}{|i_{j+1}-i_{j}|}+\sum_{[i_{j},i_{j+1}] \notin T :i_{j}\in S}{|i_{j+1}-i_{j}|} > |T| + \left(\sqrt{n}-|T|\right)2\sqrt{n} \\ 
+    &= 2n - 2\sqrt{n}|T| + |T| > 2n - 2\sqrt{n}|T| > n 
+\end{split}
+\end{equation*} contradiction.
+\end{proof}
+
+\begin{lemma} Consider \( \hpst \) with zeros set with size greater then \(\sqrt{n}\). Suppose that \(\ps \) is indeed the ground state of \(H\). Then there is a verification process that requires \ona{\sqrt{n}} time and measurements and succeeds with probability \( \Omega\left(\frac{1}{\sqrt{n}}\right)\).
+\end{lemma}
+
+\begin{proof}
+Denote by \(Q\) a FIFO queue, choose a random qudit and insert it into \(Q\), define \(f_0 = 0 \). while \(f_0 \neq 0\) (and it's not the first iteration) pop the first qudit from \(Q\), denote it by \(q\) and apply all the Hamiltonian which act over it. Add the result to 
+\begin{equation*}
+     f_{i+1} \leftarrow f_{i} + \frac{1}{m}\sum_{H_{j} \text{ act on q} }{ \bra{q,p} H_i \ket{q,p} } 
+\end{equation*} If the iteration number is greater then \(4\sqrt{n}\) then returns \textbf{False}, else if \(f_{i+1} =0 \) return \textbf{True} otherwise,repeat.       
+\end{proof}
+
+% \begin{lemma} Given Hamiltonian \( H \) decision problem, whether \(H\) has a ground state \( \ps \) such that the size of the zeros set of \(\hpst\) is greater then \(\sqrt{n} \), belongs qPCP.     
+% \end{lemma}
+
+\begin{conjecture}
+
+\end{conjecture}
+
+\begin{conjecture}
+Let \(H\) be an \Ham over qudits pair \( \mathbb{C}_d \times \mathbb{C}_d \) such that for every \((i,j) \in [d^{2}]\times[d^{2}]\) the entry \( |H_{ij}| \ge \varepsilon \) and let \( \ps \) be an arbitrary state.
+
+
+\end{conjecture}
+
+% Notice that \(S\)  is hermitian, and that \(S^2 = \sqrt{2}S\)  therefore \( e^{iS} = \sum_{k=0}^{\infty}{\frac{\left( iS\right)^k}{k!}} = \sum_{k=0}^{\infty}{\frac{\left( i\sqrt{2}\right)^k}{k!}S}   \)
+
+\printbibliography 
+
+\end{document}
